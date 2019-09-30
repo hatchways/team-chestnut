@@ -1,8 +1,6 @@
 let mongoose = require('mongoose');
 //Users SCHEMA 
 let usersSchema = new mongoose.Schema({
-    id: Number,
-    account_type: String,
     first_name: String,
     last_name: String,
     address: String,
@@ -11,9 +9,7 @@ let usersSchema = new mongoose.Schema({
     zipcode: String,
     phone: Number,
     email: String,
-    hashed_password: String,
-    image_src: String,
-    status: String
+    password: String,
 });
 
 
