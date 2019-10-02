@@ -66,3 +66,9 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+# Linter: ESLint + Prettier
+In order to use ESLint and Prettier efficiently in Visual Studio Code install to following extensions:
+    ESLint - Visual Studio Marketplace
+    Prettier - Code formatter - Visual Studio Marketplace
+Auto format javascript documents by pressing cmd + shift  + P and click Format Document
