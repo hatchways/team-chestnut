@@ -6,14 +6,27 @@ import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import { BrowserRouter } from "react-router-dom";
 
 const navStyles = makeStyles(theme => ({
+  '@global': {
+    
+    '.MuiButton-root': {
+      borderRadius: 'unset',
+    },
+    'MuiInputBase-root': {
+      borderRadius: 'unset',
+    }
+  },
   link: {
     margin: theme.spacing(1),
-    color: "white"
+    color: "white",
+    fontWeight: '600',
+    textDecoration: 'none',
+    textTransform: 'uppercase',
   },
   appBar: {
-    borderBottom: `100px solid ${theme.palette.divider}`
+    borderBottom: `10px solid ${theme.palette.divider}`
   },
   toolbar: {
     flexWrap: "wrap"
@@ -21,6 +34,7 @@ const navStyles = makeStyles(theme => ({
   toolbarTitle: {
     flexGrow: 1
   }
+
 }));
 
 const urls = {
@@ -29,69 +43,64 @@ const urls = {
   register: "/register"
 };
 
-class Navbar extends Component {
-  signPaths() {
-    const classes = navStyles();
-    const location = useLocation();
+function SigninPaths() {
+  const classes = navStyles();
+  const location = useLocation();
 
-    console.log(location.pathname);
-    if (location.pathname === urls.siginin) {
-      return (
-        <Link href={urls.signup} className={classes.link}>
-          Sign Up
-        </Link>
-      );
-    } else if (location.pathname === urls.signup) {
-      return (
+  if (location.pathname === urls.siginin) {
+    return (
+      <Link href={urls.signup} className={classes.link}>
+        Sign Up
+      </Link>
+    );
+  } else if (location.pathname === urls.signup) {
+    return (
+      <Link href={urls.siginin} className={classes.link}>
+        Sign In
+      </Link>
+    );
+  } else {
+    return (
+      <React.Fragment>
         <Link href={urls.siginin} className={classes.link}>
           Sign In
         </Link>
-      );
-    } else {
-      return (
-        <>
-          <Link href={urls.siginin} className={classes.link}>
-            Sign In
-          </Link>
-          <Link href={urls.siginup} className={classes.link}>
-            Sign Up
-          </Link>
-        </>
-      );
-    }
+        <Link href={urls.siginup} className={classes.link}>
+          Sign Up
+        </Link>
+      </React.Fragment>
+    );
   }
+}
 
-  render() {
-    const { classes } = this.props;
-    return (
+
+export default function Navbar() {
+  const classes = navStyles();
+
+  return (
+    <BrowserRouter>
       <AppBar
         position="static"
         color="primary"
         elevation={0}
         className={classes.appBar}
-        style={{ background: "black" }}
       >
         <Toolbar className={classes.toolbar}>
           <Typography
             variant="h6"
-            color="inherit"
             noWrap
             className={classes.toolbarTitle}
-            style={{ flexGrow: 1 }}
           >
-           <Link href="/" style={{ color: "white" }}>
-            Baking Company
+            <Link href="/" className={classes.link}>
+              Baking Company
             </Link>
           </Typography>
 
           <nav>
-            
-            <this.signPaths />
+            <SigninPaths />
           </nav>
         </Toolbar>
       </AppBar>
-    );
-  }
+    </BrowserRouter>
+  );
 }
-
-export default withStyles(navStyles)(Navbar);
