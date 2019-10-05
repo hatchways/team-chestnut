@@ -6,16 +6,12 @@ const { registerValidation, loginValidation } = require('../validation');
 
 router.post('/register', async (req, res) => {
     // validate data before 
-    console.log('requested register')
     const { error } = registerValidation(req.body);
-    console.log(`Error var: ${error}`);
     if (error) {
         return res.status(400).send(error.details[0].message)
     }
-    console.log(`req body: ${req.body.toString()}`);
     // check if user already registered in the database
     const emailExists = await User.findOne({email: req.body.email});
-    console.log(`Emailexists var:${emailExists}`);
     if (emailExists) return res.status(400).send('Email already registered.')
     
     // hash passwords
@@ -28,7 +24,6 @@ router.post('/register', async (req, res) => {
         email: req.body.email,
         password: hashedPassword
     });
-    console.log(user);
     try {
         const savedUser = await user.save();
         res.send(`User: ${savedUser.id}`);
