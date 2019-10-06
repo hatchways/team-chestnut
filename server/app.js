@@ -4,13 +4,21 @@ import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import mongoose from "mongoose";
+const dotenv = require('dotenv');
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
+import auth from "./routes/auth";
+import verifyToken from "./routes/verifyToken";
 
-
+dotenv.config();
 var app = express();
 
+mongoose.connect(
+  process.env.DB_CONNECT,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  () => console.log('connected to db!')
+);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -23,8 +31,9 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use("/auth", auth);
+app.use("/", indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
