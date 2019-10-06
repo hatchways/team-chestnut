@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useLocation } from "react-router";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -37,14 +34,56 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SignIn() {
+export default function SignAll() {
   const classes = useStyles();
+  const location = useLocation();
+
+  // Declare multiple state variables!
   const [email, setEmail] = useState("");
   const [emailError, setEmailEroor] = useState(false);
   const [emailErrorText, setemailErrorText] = useState("");
   const [password, setPassowrd] = useState("");
   const [passwordError, setPassowrdError] = useState(false);
   const [passwordErrorText, setPassowrdErrorText] = useState("");
+  const [fullName, setfullName] = useState("");
+  const [fullNameError, setfullNameError] = useState(false);
+  const [fullNameErrorText, setfullNameErrorText] = useState("");
+
+  const paths = {
+    "/signin": {
+      label: "Sign in",
+      textFields: ["email", "password"],
+      links: { label: "Forgot password?", hrefs: "#" },
+      fetch: "/siginin"
+    },
+    "/signup": {
+      label: "Sign Up",
+      textFields: ["email", "name", "password"],
+      fetch: "/siginup"
+    }
+  };
+  const textLabels = {
+    'email': {
+      label: "Email Address",
+      error: emailError,
+      focus: true,
+      helperText: emailErrorText
+    },
+    'password': {
+      label: "Password",
+      error: passwordError,
+      focus: false,
+      helperText: passwordErrorText
+    },
+    'name': {
+      label: "Full Name",
+      error: fullNameError,
+      focus: false,
+      helperText: fullNameErrorText
+    }
+  };
+
+  const page = paths[location.pathname];
 
   function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -52,6 +91,7 @@ export default function SignIn() {
   }
 
   const handleChange = type => event => {
+    console.log("event is ", type, event);
     if (type === "email") {
       setEmailEroor(false);
       setEmail(event.target.value);
@@ -59,6 +99,10 @@ export default function SignIn() {
     if (type === "password") {
       setPassowrdError(false);
       setPassowrd(event.target.value);
+    }
+    if (type === "name") {
+      setfullNameError(false);
+      setfullName(event.target.value);
     }
   };
 
@@ -72,6 +116,25 @@ export default function SignIn() {
       setPassowrdError(true);
       setPassowrdErrorText("Please enter a six digit or more password");
     }
+    if (fullName.length < 3) {
+      setfullNameError(true);
+      setfullNameErrorText("Please enter Full Name");
+    } else {
+      // will need to add the post request here and then handle redirect....
+    }
+  }
+  function ForgorPassword() {
+    if (page.hasOwnProperty("links")) {
+      return (
+        <Typography>
+          <Link href={page.links.hrefs} variant="body2">
+            {page.links.label}
+          </Link>
+        </Typography>
+      );
+    } else {
+      return null;
+    }
   }
 
   return (
@@ -79,49 +142,36 @@ export default function SignIn() {
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component="h1" variant="h6">
-          Sign in
+          {page.label}
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={handleChange("email")}
-            error={emailError}
-            helperText={emailErrorText}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={handleChange("password")}
-            error={passwordError}
-            helperText={passwordErrorText}
-          />
-          <Typography>
-            <Link href="#" variant="body2">
-              Forgot password?
-            </Link>
-          </Typography>
+          {page.textFields.map((entry, i) => {
+            return (
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id={entry}
+                label={textLabels[entry].label}
+                name={entry}
+                autoComplete={entry}
+                autoFocus={textLabels[entry].focus}
+                onChange={handleChange(entry)}
+                error={textLabels[entry].error}
+                helperText={textLabels[entry].helperText}
+                key={i}
+              />
+            );
+          })}
+          <ForgorPassword />
           <Button
             type="submit"
             variant="contained"
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            {page.label}
           </Button>
         </form>
       </div>

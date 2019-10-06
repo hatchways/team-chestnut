@@ -2,7 +2,10 @@ import { createMuiTheme } from "@material-ui/core";
 
 export const theme = createMuiTheme({
   typography: {
-    fontFamily: '"Roboto"'
+    fontFamily: '"Roboto"',
+    button: {
+      borderRadius: 'unset',
+    },
   },
   palette: {
     primary: {
@@ -17,11 +20,6 @@ export const theme = createMuiTheme({
     background: {
       main: '#fff',
     }
-  },
-  typography: {
-    button: {
-      borderRadius: 'unset',
-    },
   },
   secondary: "#1f1f1f",
   error: "#d8000c",
