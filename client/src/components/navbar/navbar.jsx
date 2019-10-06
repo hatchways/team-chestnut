@@ -40,11 +40,11 @@ function SigninPaths() {
   const path = location.pathname;
 
   const urls = {
-    "/signin": { label: "Sign In", oppPath: '/signup', oppLabel: "Sign Up" },
-    "/signup": { label: "Sign Up", oppPath: '/signin', oppLabel: "Sign In"  }
+    "/signin": { label: "Sign In", oppPath: "/signup", oppLabel: "Sign Up" },
+    "/signup": { label: "Sign Up", oppPath: "/signin", oppLabel: "Sign In" }
   };
 
-  if (path === "/signin" || path === "/signup" ) {
+  if (path === "/signin" || path === "/signup") {
     return (
       <Link href={urls[path].oppPath} className={classes.link}>
         {urls[path].oppLabel}
