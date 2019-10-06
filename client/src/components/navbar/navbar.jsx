@@ -8,21 +8,20 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { BrowserRouter } from "react-router-dom";
 
 const navStyles = makeStyles(theme => ({
-  '@global': {
-    
-    '.MuiButton-root': {
-      borderRadius: 'unset',
+  "@global": {
+    ".MuiButton-root": {
+      borderRadius: "unset"
     },
-    'MuiInputBase-root': {
-      borderRadius: 'unset',
+    "MuiInputBase-root": {
+      borderRadius: "unset"
     }
   },
   link: {
     margin: theme.spacing(1),
     color: "white",
-    fontWeight: '600',
-    textDecoration: 'none',
-    textTransform: 'uppercase',
+    fontWeight: "600",
+    textDecoration: "none",
+    textTransform: "uppercase"
   },
   appBar: {
     borderBottom: `10px solid ${theme.palette.divider}`
@@ -33,45 +32,36 @@ const navStyles = makeStyles(theme => ({
   toolbarTitle: {
     flexGrow: 1
   }
-
 }));
-
-const urls = {
-  siginin: "/signin",
-  signup: "/signup",
-  register: "/register"
-};
 
 function SigninPaths() {
   const classes = navStyles();
   const location = useLocation();
+  const path = location.pathname;
 
-  if (location.pathname === urls.siginin) {
+  const urls = {
+    "/signin": { label: "Sign In", oppPath: '/signup', oppLabel: "Sign Up" },
+    "/signup": { label: "Sign Up", oppPath: '/signin', oppLabel: "Sign In"  }
+  };
+
+  if (path === "/signin" || path === "/signup" ) {
     return (
-      <Link href={urls.signup} className={classes.link}>
-        Sign Up
-      </Link>
-    );
-  } else if (location.pathname === urls.signup) {
-    return (
-      <Link href={urls.siginin} className={classes.link}>
-        Sign In
+      <Link href={urls[path].oppPath} className={classes.link}>
+        {urls[path].oppLabel}
       </Link>
     );
   } else {
-    return (
-      <React.Fragment>
-        <Link href={urls.siginin} className={classes.link}>
-          Sign In
+    let links = [];
+    Object.keys(urls).forEach((entry, i) => {
+      return links.push(
+        <Link href={entry} className={classes.link} key={i}>
+          {urls[entry].label}
         </Link>
-        <Link href={urls.siginup} className={classes.link}>
-          Sign Up
-        </Link>
-      </React.Fragment>
-    );
+      );
+    });
+    return links;
   }
 }
-
 
 export default function Navbar() {
   const classes = navStyles();
@@ -85,11 +75,7 @@ export default function Navbar() {
         className={classes.appBar}
       >
         <Toolbar className={classes.toolbar}>
-          <Typography
-            variant="h6"
-            noWrap
-            className={classes.toolbarTitle}
-          >
+          <Typography variant="h6" noWrap className={classes.toolbarTitle}>
             <Link href="/" className={classes.link}>
               Baking Company
             </Link>
