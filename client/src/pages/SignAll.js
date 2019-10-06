@@ -40,7 +40,7 @@ export default function SignAll() {
 
   // Declare multiple state variables!
   const [email, setEmail] = useState("");
-  const [emailError, setEmailEroor] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [emailErrorText, setemailErrorText] = useState("");
   const [password, setPassowrd] = useState("");
   const [passwordError, setPassowrdError] = useState(false);
@@ -93,7 +93,7 @@ export default function SignAll() {
   const handleChange = type => event => {
     console.log("event is ", type, event);
     if (type === "email") {
-      setEmailEroor(false);
+      setEmailError(false);
       setEmail(event.target.value);
     }
     if (type === "password") {
@@ -109,7 +109,7 @@ export default function SignAll() {
   function handleSubmit(e) {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setEmailEroor(true);
+      setEmailError(true);
       setemailErrorText("Please enter a valid email");
     }
     if (password.length < 6) {
@@ -123,7 +123,7 @@ export default function SignAll() {
       // will need to add the post request here and then handle redirect....
     }
   }
-  function ForgorPassword() {
+  function ForgotPassword() {
     if (page.hasOwnProperty("links")) {
       return (
         <Typography>
@@ -164,7 +164,7 @@ export default function SignAll() {
               />
             );
           })}
-          <ForgorPassword />
+          <ForgotPassword />
           <Button
             type="submit"
             variant="contained"
