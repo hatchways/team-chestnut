@@ -6,6 +6,17 @@ import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Snackbar from "@material-ui/core/Snackbar";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorIcon from "@material-ui/icons/Error";
+import InfoIcon from "@material-ui/icons/Info";
+import WarningIcon from "@material-ui/icons/Warning";
+import CloseIcon from "@material-ui/icons/Close";
+import { amber, green } from "@material-ui/core/colors";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import clsx from "clsx";
+import IconButton from "@material-ui/core/IconButton";
+
 import { useLocation } from "react-router";
 
 const useStyles = makeStyles(theme => ({
@@ -31,6 +42,29 @@ const useStyles = makeStyles(theme => ({
     display: "block",
     padding: "10px 40px",
     marginTop: "30px"
+  },
+  success: {
+    backgroundColor: green[600]
+  },
+  error: {
+    backgroundColor: theme.palette.error.dark
+  },
+  info: {
+    backgroundColor: theme.palette.primary.main
+  },
+  warning: {
+    backgroundColor: amber[700]
+  },
+  icon: {
+    fontSize: 20
+  },
+  iconVariant: {
+    opacity: 0.9,
+    marginRight: theme.spacing(1)
+  },
+  message: {
+    display: "flex",
+    alignItems: "center"
   }
 }));
 
@@ -38,7 +72,6 @@ export default function SignAll() {
   const classes = useStyles();
   const location = useLocation();
 
-  // Declare multiple state variables!
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [emailErrorText, setemailErrorText] = useState("");
@@ -48,39 +81,51 @@ export default function SignAll() {
   const [fullName, setfullName] = useState("");
   const [fullNameError, setfullNameError] = useState(false);
   const [fullNameErrorText, setfullNameErrorText] = useState("");
+  const [fetchStatus, setStatus] = useState("");
+  const [StatusMessage, setStatusMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const [Icon, setIcon] = useState(InfoIcon);
 
   const paths = {
     "/signin": {
       label: "Sign in",
       textFields: ["email", "password"],
       links: { label: "Forgot password?", hrefs: "#" },
-      fetch: "/siginin"
+      fetch: "/login",
+      status: 200
     },
     "/signup": {
       label: "Sign Up",
       textFields: ["email", "name", "password"],
-      fetch: "/siginup"
+      fetch: "/register",
+      status: 201
     }
   };
   const textLabels = {
-    'email': {
+    email: {
       label: "Email Address",
       error: emailError,
       focus: true,
       helperText: emailErrorText
     },
-    'password': {
+    password: {
       label: "Password",
       error: passwordError,
       focus: false,
       helperText: passwordErrorText
     },
-    'name': {
+    name: {
       label: "Full Name",
       error: fullNameError,
       focus: false,
       helperText: fullNameErrorText
     }
+  };
+  const variantIcon = {
+    success: CheckCircleIcon,
+    warning: WarningIcon,
+    error: ErrorIcon,
+    info: InfoIcon
   };
 
   const page = paths[location.pathname];
@@ -91,13 +136,13 @@ export default function SignAll() {
   }
 
   const handleChange = type => event => {
-    console.log("event is ", type, event);
     if (type === "email") {
       setEmailError(false);
       setEmail(event.target.value);
     }
     if (type === "password") {
       setPassowrdError(false);
+      //Do we need password validation like empty spaces,  strength of passoword and not allow special characters?
       setPassowrd(event.target.value);
     }
     if (type === "name") {
@@ -111,18 +156,68 @@ export default function SignAll() {
     if (!validateEmail(email)) {
       setEmailError(true);
       setemailErrorText("Please enter a valid email");
-    }
-    if (password.length < 6) {
+    } else if (password.length < 6) {
       setPassowrdError(true);
       setPassowrdErrorText("Please enter a six digit or more password");
-    }
-    if (fullName.length < 3) {
+    } else if (fullName.length < 3 && page === "/signup") {
       setfullNameError(true);
       setfullNameErrorText("Please enter Full Name");
     } else {
-      // will need to add the post request here and then handle redirect....
+      let postbody = {
+        email,
+        password
+      };
+      if (fullName.length > 3) {
+        postbody.name = fullName;
+      }
+
+      let settingStatus;
+      fetch(page.fetch, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postbody)
+      })
+        .then(res => {
+          if (res.status === page.status) {
+            setStatus("success");
+            setStatusMessage("Succesfull");
+            setIcon(variantIcon.success);
+            settingStatus = "success";
+          } else {
+            setStatus("error");
+            setIcon(variantIcon.error);
+            settingStatus = "error";
+          }
+          return res.json();
+        })
+        .then(res => {
+          if (settingStatus === "error") {
+            setStatusMessage(res.message);
+          } else {
+            localStorage.setItem("token", res.token);
+          }
+          setOpen(true);
+        })
+        .catch(err => {
+          console.log("Fetch error is: ", err.message);
+          setStatus("error");
+          setIcon(variantIcon.error);
+          setStatusMessage("There was an error connecting to server, Please try later");
+          setOpen(true);
+        });
     }
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   function ForgotPassword() {
     if (page.hasOwnProperty("links")) {
       return (
@@ -173,6 +268,36 @@ export default function SignAll() {
           >
             {page.label}
           </Button>
+          <Snackbar
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center"
+            }}
+            open={open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <SnackbarContent
+              className={clsx(classes[fetchStatus])}
+              aria-describedby="client-snackbar"
+              message={
+                <span id="client-icon" className={classes.message}>
+                  <Icon className={clsx(classes.icon, classes.iconVariant)} />
+                  {StatusMessage}
+                </span>
+              }
+              action={[
+                <IconButton
+                  key="close"
+                  aria-label="close"
+                  color="inherit"
+                  onClick={handleClose}
+                >
+                  <CloseIcon className={classes.icon} />
+                </IconButton>
+              ]}
+            />
+          </Snackbar>
         </form>
       </div>
     </Container>
