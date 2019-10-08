@@ -205,7 +205,7 @@ export default function SignAll() {
           console.log("Fetch error is: ", err.message);
           setStatus("error");
           setIcon(variantIcon.error);
-          setStatusMessage("There was an error connecting to server, Please try later");
+          setStatusMessage("There was an error connecting to server.");
           setOpen(true);
         });
     }

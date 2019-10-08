@@ -21,17 +21,38 @@ const navStyles = makeStyles(theme => ({
     color: "white",
     fontWeight: "600",
     textDecoration: "none",
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    '&:hover': {
+      textDecoration: 'none',
+      color: 'lightgrey',
+    }
   },
   appBar: {
-    borderBottom: `10px solid ${theme.palette.divider}`
+    borderBottom: `10px solid ${theme.palette.divider}`,
+    borderTop: `10px solid ${theme.palette.divider}`
   },
   toolbar: {
     flexWrap: "wrap"
   },
   toolbarTitle: {
     flexGrow: 1
-  }
+  },
+  logolink: {
+    color: "lightgrey",
+    fontWeight: "100",
+    paddingTop: '10px,',
+    letterSpacing: '5px',
+    fontSize: '15px',
+    '&:hover': {
+      textDecoration: 'none',
+      color: 'white'
+    }
+  },
+  logoImage: {
+    position: 'absolute',
+    top: '5px',
+    left: '90px',
+}
 }));
 
 function SigninPaths() {
@@ -76,8 +97,18 @@ export default function Navbar() {
       >
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" noWrap className={classes.toolbarTitle}>
-            <Link href="/" className={classes.link}>
-              Baking Company
+            <Link href="/" className={classes.logolink} style={{}}>
+              <img
+                src={
+                  process.env.PUBLIC_URL +
+                  "/Assets/images/birthday-cake-solid.svg"
+                }
+                width="25"
+                height="25"
+                alt ='logo'
+                className = {classes.logoImage}
+              ></img>
+              <br></br>BAKERY SHOP
             </Link>
           </Typography>
 
