@@ -4,20 +4,20 @@ import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import mongoose from "mongoose";
-const dotenv = require('dotenv');
+const busboy = require('connect-busboy');
+const busboyBodyParser = require('busboy-body-parser');
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
-import auth from "./routes/auth";
-import verifyToken from "./routes/verifyToken";
+import authRouter from "./routes/auth";
+const shopIdRouter = require("./routes/shopId");
 
-dotenv.config();
 var app = express();
 
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log('connected to db!')
+  () => console.log('Mongoose has connected to the database!')
 );
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -25,15 +25,20 @@ db.once('open', function() {
       console.log("you are connected");
 });
 
+// file handling middleware
+app.use(busboy());
+app.use(busboyBodyParser());
+
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-app.use("/ping", pingRouter);
-app.use("/auth", auth);
 app.use("/", indexRouter);
+app.use("/ping", pingRouter);
+app.use("/auth", authRouter);
+app.use("/shopid", shopIdRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
