@@ -4,13 +4,6 @@ jobs: # a collection of steps
     docker: # run the steps with Docker
       - image: circleci/node:4.8.2 # ...with this image as the primary container; this is where all `steps` will run
       - image: mongo:3.4.4 # and this image as the secondary service container
-      environment:
-            DB_CONNECT: conductor
-            TOKEN_SECRET: conductor_test
-            BUCKET_NAME: bucketname
-            IAM_USER_KEY: 123abcde
-            IAM_USER_SECRET: 123abcde
-            BUCKET_REGION: eastcanada
     steps: # a collection of executable commands
       - checkout # special step to check out source code to working directory
       - run:
@@ -32,3 +25,10 @@ jobs: # a collection of steps
       - run: # run tests
           name: test
           command: cd server && npm test
+            environment:
+              DB_CONNECT: conductor
+              TOKEN_SECRET: conductor_test
+              BUCKET_NAME: bucketname
+              IAM_USER_KEY: 123abcde
+              IAM_USER_SECRET: 123abcde
+              BUCKET_REGION: eastcanada
