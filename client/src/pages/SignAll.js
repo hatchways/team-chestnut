@@ -75,7 +75,7 @@ export default function SignAll() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [emailErrorText, setemailErrorText] = useState("");
-  const [password, setPassowrd] = useState("");
+  const [password, setPassword] = useState("");
   const [passwordError, setPassowrdError] = useState(false);
   const [passwordErrorText, setPassowrdErrorText] = useState("");
   const [fullName, setfullName] = useState("");
@@ -143,7 +143,7 @@ export default function SignAll() {
     if (type === "password") {
       setPassowrdError(false);
       //Do we need password validation like empty spaces,  strength of passoword and not allow special characters?
-      setPassowrd(event.target.value);
+      setPassword(event.target.value);
     }
     if (type === "name") {
       setfullNameError(false);
@@ -163,12 +163,12 @@ export default function SignAll() {
       setfullNameError(true);
       setfullNameErrorText("Please enter Full Name");
     } else {
-      let postbody = {
+      const postBody = {
         email,
         password
       };
       if (fullName.length > 3) {
-        postbody.name = fullName;
+        postBody.name = fullName;
       }
 
       let settingStatus;
@@ -178,7 +178,7 @@ export default function SignAll() {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(postbody)
+        body: JSON.stringify(postBody)
       })
         .then(res => {
           if (res.status === page.status) {
