@@ -73,6 +73,7 @@ You can also use mongo in your terminal to check the database. type `$ mongo` an
 BUCKET_NAME
 IAM_USER_KEY
 IAM_USER_SECRET
+BUCKET_REGION
 
 # Linter: ESLint + Prettier
 In order to use ESLint and Prettier efficiently in Visual Studio Code install to following extensions:

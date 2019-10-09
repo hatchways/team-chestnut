@@ -4,30 +4,24 @@ import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import mongoose from "mongoose";
-const busboy = require('connect-busboy');
-const busboyBodyParser = require('busboy-body-parser');
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRouter from "./routes/auth";
-const shopIdRouter = require("./routes/shopId");
+import shopRouter from "./routes/shop";
 
-var app = express();
+let app = express();
 
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => console.log('Mongoose has connected to the database!')
 );
-var db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
       console.log("you are connected");
 });
-
-// file handling middleware
-app.use(busboy());
-app.use(busboyBodyParser());
 
 app.use(logger("dev"));
 app.use(json());
@@ -38,7 +32,7 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/auth", authRouter);
-app.use("/shopid", shopIdRouter);
+app.use("/shop", shopRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
