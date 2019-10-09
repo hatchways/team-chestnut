@@ -1,11 +1,11 @@
-let mongoose = require("mongoose");
+import mongoose from 'mongoose';
 //Users SCHEMA
 const usersSchema = new mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: {
     type: String,
     required: true,
-    min: 6,
+    min: 1,
     max: 255
   },
   email: {

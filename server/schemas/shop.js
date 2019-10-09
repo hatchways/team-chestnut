@@ -1,7 +1,7 @@
-let mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const itemSchema = new mongoose.Schema({
-  Title: { type: String },
+  title: { type: String },
   price: { type: Number },
   description: { type: String },
   category: { type: String },
