@@ -11,6 +11,7 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import auth from "./routes/auth";
 import verifyToken from "./routes/verifyToken";
+import users from './schemas/users';
 
 dotenv.config();
 var app = express();
