@@ -6,13 +6,14 @@ const { registerValidation, loginValidation } = require('../validation');
 
 router.post('/register', async (req, res) => {
     // validate data before 
+    console.log('i am hitting register end point');
     const { error } = registerValidation(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message)
     }
     // check if user already registered in the database
     const emailExists = await User.findOne({email: req.body.email});
-    if (emailExists) return res.status(400).send('Email already registered.')
+    if (emailExists) return res.status(400).send({message:'Email already registered.'})
     
     // hash passwords
     const salt = await bcrypt.genSalt(10);
@@ -27,7 +28,7 @@ router.post('/register', async (req, res) => {
     try {
         const savedUser = await user.save();
         const token = jwt.sign({_id: savedUser.id}, process.env.TOKEN_SECRET);
-        res.status(201).header('auth-token', token).send(token);
+        res.status(201).header('auth-token', token).send({token});
     } catch (err) {
         res.status(400).send(err);
     }
@@ -36,19 +37,20 @@ router.post('/register', async (req, res) => {
 // login
 router.post('/login', async (req, res) => {
     // validate user before 
+    console.log('i am hitting register login point');
     const { error } = loginValidation(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message)
     }
     // check if user exists
     const user = await User.findOne({email: req.body.email});
-    if (!user) return res.status(400).send('Email is not found.');
+    if (!user) return res.status(400).send({message:'Email is not found.'});
     // password is correct
     const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) return res.status(400).send('Email or password is incorrect.');
+    if (!validPass) return res.status(400).send({message:'Email or password is incorrect.'});
     // create and assign token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    res.header('auth-token', token).send({token});
 });
 
 module.exports = router;
