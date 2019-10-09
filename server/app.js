@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import mongoose from "mongoose";
 const dotenv = require('dotenv');
+import users from './schemas/users'
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
@@ -51,7 +52,7 @@ app.use(express.static(join(__dirname, "public")));
 
 app.use("/ping", pingRouter);
 app.use("/auth", auth);
-app.use("/", indexRouter);
+app.use("/", auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

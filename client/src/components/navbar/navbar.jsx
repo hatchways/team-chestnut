@@ -1,11 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { BrowserRouter } from "react-router-dom";
+import Logo from '../../Assets/images/birthday-cake-solid.svg';
+
+
+// console.log(cakeLogo);
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -21,16 +25,37 @@ const navStyles = makeStyles(theme => ({
     color: "white",
     fontWeight: "600",
     textDecoration: "none",
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    "&:hover": {
+      textDecoration: "none",
+      color: "lightgrey"
+    }
   },
   appBar: {
-    borderBottom: `10px solid ${theme.palette.divider}`
+    borderBottom: `10px solid ${theme.palette.divider}`,
+    borderTop: `10px solid ${theme.palette.divider}`
   },
   toolbar: {
     flexWrap: "wrap"
   },
   toolbarTitle: {
     flexGrow: 1
+  },
+  logolink: {
+    color: "lightgrey",
+    fontWeight: "100",
+    paddingTop: "10px,",
+    letterSpacing: "5px",
+    fontSize: "15px",
+    "&:hover": {
+      textDecoration: "none",
+      color: "white"
+    }
+  },
+  logoImage: {
+    position: "absolute",
+    top: "5px",
+    left: "90px"
   }
 }));
 
@@ -76,8 +101,15 @@ export default function Navbar() {
       >
         <Toolbar className={classes.toolbar}>
           <Typography variant="h6" noWrap className={classes.toolbarTitle}>
-            <Link href="/" className={classes.link}>
-              Baking Company
+            <Link href="/" className={classes.logolink} style={{}}>
+              <img
+                src={Logo}
+                width="25"
+                height="25"
+                alt="logo"
+                className={classes.logoImage}
+              />
+              <br></br>BAKERY SHOP
             </Link>
           </Typography>
 
