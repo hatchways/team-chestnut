@@ -25,7 +25,7 @@ jobs: # a collection of steps
       - run: # run tests
           name: test
           command: cd server && npm test
-            environment:
+          environment:
               DB_CONNECT: conductor
               TOKEN_SECRET: conductor_test
               BUCKET_NAME: bucketname
