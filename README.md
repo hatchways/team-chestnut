@@ -9,6 +9,72 @@ To Run MongoDb in mac with mongoose, follow three steps
 
 You can also use mongo in your terminal to check the database. type `$ mongo` and you now you can use [shell commands](https://docs.mongodb.com/manual/mongo/)
 
+# S3 Bucket
+1. Create an S3 bucket
+2. Add the following to the bucket policy and update it with the name of the bucket created:
+```json
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1488494182833",
+    "Statement": [
+        {
+            "Sid": "Stmt1488493308547",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::172016543521:user/name"
+            },
+            "Action": [
+                "s3:ListBucket",
+                "s3:ListBucketVersions",
+                "s3:GetBucketLocation",
+                "s3:Get*",
+                "s3:Put*"
+            ],
+            "Resource": "arn:aws:s3:::bucket-name"
+        }
+    ]
+}
+```
+3. Add the following to CORS configuration:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+    <AllowedHeader>Authorization</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+```
+4. Create a IAM user, record access key ID and secret key, and add USER ARN to the bucket policy created in step 2(statement>principal>AWS)
+5. create an inline-policy for the user containing the following with your bucket name:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets",
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bucket-name"
+            ]
+        }
+    ]
+}
+```
+6. Update the .env file with the following variables:
+BUCKET_NAME
+IAM_USER_KEY
+IAM_USER_SECRET
+BUCKET_REGION
+
 # Linter: ESLint + Prettier
 In order to use ESLint and Prettier efficiently in Visual Studio Code install to following extensions:
     ESLint - Visual Studio Marketplace
