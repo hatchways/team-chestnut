@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -16,6 +16,8 @@ import { amber, green } from "@material-ui/core/colors";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import clsx from "clsx";
 import IconButton from "@material-ui/core/IconButton";
+import { LoginContext } from "../contexts/LoginContext";
+import { useHistory } from "react-router-dom";
 
 import { useLocation } from "react-router";
 
@@ -71,6 +73,8 @@ const useStyles = makeStyles(theme => ({
 export default function SignAll() {
   const classes = useStyles();
   const location = useLocation();
+  let history = useHistory();
+  const [Login, setLogin] = useContext(LoginContext);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -85,19 +89,24 @@ export default function SignAll() {
   const [StatusMessage, setStatusMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [Icon, setIcon] = useState(InfoIcon);
+  const [FetchBody, setFetchBody] = useState(false);
+
+  if (Login === "loggedin") {
+    history.push("/");
+  }
 
   const paths = {
     "/signin": {
       label: "Sign in",
       textFields: ["email", "password"],
       links: { label: "Forgot password?", hrefs: "#" },
-      fetch: "/login",
+      fetch: "/auth/Login",
       status: 200
     },
     "/signup": {
       label: "Sign Up",
       textFields: ["email", "name", "password"],
-      fetch: "/register",
+      fetch: "/auth/register",
       status: 201
     }
   };
@@ -151,6 +160,18 @@ export default function SignAll() {
     }
   };
 
+  // useEffect(() => {
+
+  //   async function fetchData() {
+  //     console.log('this is the fetach body', FetchBody);
+  //     if(FetchBody === false) return;
+
+  //   return () => (isSubscribed = false);
+
+  //   }
+  //   fetchData();
+  // }, [FetchBody]);
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!validateEmail(email)) {
@@ -159,7 +180,7 @@ export default function SignAll() {
     } else if (password.length < 6) {
       setPassowrdError(true);
       setPassowrdErrorText("Please enter a six digit or more password");
-    } else if (fullName.length < 3 && page === "/signup") {
+    } else if (fullName.length < 2 && page === "/signup") {
       setfullNameError(true);
       setfullNameErrorText("Please enter Full Name");
     } else {
@@ -167,11 +188,12 @@ export default function SignAll() {
         email,
         password
       };
-      if (fullName.length > 3) {
+      if (fullName.length > 2) {
         postBody.name = fullName;
       }
 
       let settingStatus;
+
       fetch(page.fetch, {
         method: "POST",
         headers: {
@@ -183,7 +205,7 @@ export default function SignAll() {
         .then(res => {
           if (res.status === page.status) {
             setStatus("success");
-            setStatusMessage("Succesfull");
+            setStatusMessage("Success");
             setIcon(variantIcon.success);
             settingStatus = "success";
           } else {
@@ -196,10 +218,12 @@ export default function SignAll() {
         .then(res => {
           if (settingStatus === "error") {
             setStatusMessage(res.message);
+            setOpen(true);
           } else {
             localStorage.setItem("token", res.token);
+            setLogin("loggedIn");
+            history.push("/admin");
           }
-          setOpen(true);
         })
         .catch(err => {
           console.log("Fetch error is: ", err.message);

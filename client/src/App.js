@@ -7,19 +7,26 @@ import LandingPage from "./pages/Landing";
 import Navbar from "./components/navbar/navbar";
 import SignAll from "./pages/SignAll";
 import "./App.css";
+import { LoginProvider } from "./contexts/LoginContext";
+import Admin from './pages/admin';
 
 function App() {
   return (
+    <LoginProvider>
     <MuiThemeProvider theme={theme}>
-      <Navbar />
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={LandingPage} />
-          <Route path="/signin" component={SignAll} />
-          <Route path="/signup" component={SignAll} />
-        </Switch>
-      </BrowserRouter>
+     
+        <Navbar />
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <Route path="/signin" component={SignAll} />
+            <Route path="/signup" component={SignAll} />
+            <Route path="/admin" component={Admin} />
+          </Switch>
+        </BrowserRouter>
+     
     </MuiThemeProvider>
+    </LoginProvider>
   );
 }
 

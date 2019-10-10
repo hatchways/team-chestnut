@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation } from "react-router-dom";
 import Link from "@material-ui/core/Link";
@@ -6,8 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { BrowserRouter } from "react-router-dom";
-import Logo from '../../Assets/images/birthday-cake-solid.svg';
-
+import Logo from "../../Assets/images/birthday-cake-solid.svg";
+import { LoginContext } from "../../contexts/LoginContext";
 
 // console.log(cakeLogo);
 
@@ -62,30 +62,60 @@ const navStyles = makeStyles(theme => ({
 function SigninPaths() {
   const classes = navStyles();
   const location = useLocation();
-  const path = location.pathname;
+  const currentPage = location.pathname;
+  const [Login] = useContext(LoginContext);
 
-  const urls = {
-    "/signin": { label: "Sign In", oppPath: "/signup", oppLabel: "Sign Up" },
-    "/signup": { label: "Sign Up", oppPath: "/signin", oppLabel: "Sign In" }
+  const mainUrls = {
+    loggedIn: [
+      { label: "Shop", path: "/shop" },
+      { label: "Messages", path: "/messages" },
+      { label: "My Favourites", path: "/my_shop" },
+      { label: "My Shop", path: "/my_account" },
+      {
+        label: "My Account",
+        path: "/my_shop",
+        sublinks: [
+          { label: "Edit Account", path: "/edit_account" },
+          { label: "Logout", path: "/logout" }
+        ]
+      }
+    ],
+    loggedOut: [
+      { label: "Sign In", path: "/signin" },
+      { label: "Sign Up", path: "/signup" }
+    ]
   };
+  const [ModifyLinks, setModifyLinks] = useState(mainUrls[Login]);
 
-  if (path === "/signin" || path === "/signup") {
-    return (
-      <Link href={urls[path].oppPath} className={classes.link}>
-        {urls[path].oppLabel}
-      </Link>
-    );
-  } else {
-    let links = [];
-    Object.keys(urls).forEach((entry, i) => {
-      return links.push(
-        <Link href={entry} className={classes.link} key={i}>
-          {urls[entry].label}
-        </Link>
-      );
-    });
-    return links;
-  }
+  useEffect(() => {
+    if (currentPage === "/signin" && Login === "loggedOut") {
+      setModifyLinks([{ label: "Sign Up", path: "/signup" }]);
+    } else if (currentPage === "/signup" && Login === "loggedOut") {
+      setModifyLinks([{ label: "Sign In", path: "/signin" }]);
+    } else {
+      setModifyLinks(mainUrls[Login]);
+    }
+  }, [Login]);
+
+  return (
+    <div>
+      {ModifyLinks.map((linked, i) => {
+        if (linked.sublinks) {
+          return (
+            <Link href={linked.path} className={classes.link} key={i}>
+              {linked.label}
+            </Link>
+          );
+        } else {
+          return (
+            <Link href={linked.path} className={classes.link} key={i}>
+              {linked.label}
+            </Link>
+          );
+        }
+      })}
+    </div>
+  );
 }
 
 export default function Navbar() {
