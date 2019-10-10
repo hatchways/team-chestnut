@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -89,7 +89,6 @@ export default function SignAll() {
   const [StatusMessage, setStatusMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [Icon, setIcon] = useState(InfoIcon);
-  const [FetchBody, setFetchBody] = useState(false);
 
   if (Login === "loggedin") {
     history.push("/");
@@ -151,7 +150,6 @@ export default function SignAll() {
     }
     if (type === "password") {
       setPassowrdError(false);
-      //Do we need password validation like empty spaces,  strength of passoword and not allow special characters?
       setPassword(event.target.value);
     }
     if (type === "name") {
@@ -160,17 +158,6 @@ export default function SignAll() {
     }
   };
 
-  // useEffect(() => {
-
-  //   async function fetchData() {
-  //     console.log('this is the fetach body', FetchBody);
-  //     if(FetchBody === false) return;
-
-  //   return () => (isSubscribed = false);
-
-  //   }
-  //   fetchData();
-  // }, [FetchBody]);
 
   function handleSubmit(e) {
     e.preventDefault();

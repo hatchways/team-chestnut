@@ -8,8 +8,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { BrowserRouter } from "react-router-dom";
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
+import { useHistory } from "react-router-dom";
 
-// console.log(cakeLogo);
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+
+import Icon from "@material-ui/core/Icon";
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -102,9 +106,12 @@ function SigninPaths() {
       {ModifyLinks.map((linked, i) => {
         if (linked.sublinks) {
           return (
-            <Link href={linked.path} className={classes.link} key={i}>
-              {linked.label}
-            </Link>
+            <MyAccount
+              items={linked.sublinks}
+              label={linked.label}
+              path={linked.path}
+              key={i}
+            />
           );
         } else {
           return (
@@ -115,6 +122,68 @@ function SigninPaths() {
         }
       })}
     </div>
+  );
+}
+
+function MyAccount({ items, label, path }) {
+  const classes = navStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [Login, setLogin] = useContext(LoginContext);
+  let history = useHistory();
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const Logout = () => {
+    localStorage.removeItem("token");
+    setLogin("loggedOut");
+    history.push("/");
+  };
+
+  const MenuItemChildren = (
+    <Menu
+      id="simple-menu"
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
+    >
+      {items.map((item, index) => {
+        if (item.label === "Logout") {
+          return (
+            <MenuItem onClick={Logout} key={index}>
+              <Icon>power_settings_new</Icon>
+              {item.label}
+            </MenuItem>
+          );
+        } else {
+          return (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                history.push(item.path);
+              }}
+            >
+              {item.label}
+            </MenuItem>
+          );
+        }
+      })}
+    </Menu>
+  );
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  return (
+    <React.Fragment>
+      <Link className={classes.link} onMouseOverCapture={handleClick}>
+        {label}
+      </Link>
+      {MenuItemChildren}
+    </React.Fragment>
   );
 }
 
