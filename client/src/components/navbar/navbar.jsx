@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useLocation, BrowserRouter } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import { BrowserRouter } from "react-router-dom";
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
+import { LoginContext } from "../../contexts/LoginContext";
+import { useHistory } from "react-router-dom";
+
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+
+import Icon from "@material-ui/core/Icon";
+
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -55,36 +64,126 @@ const navStyles = makeStyles(theme => ({
   }
 }));
 
-function SigninPaths() {
+function SigninPaths({ Logout, Login }) {
   const classes = navStyles();
   const location = useLocation();
-  const path = location.pathname;
+  const currentPage = location.pathname;
 
-  const urls = {
-    "/signin": { label: "Sign In", oppPath: "/signup", oppLabel: "Sign Up" },
-    "/signup": { label: "Sign Up", oppPath: "/signin", oppLabel: "Sign In" }
+  const mainUrls = {
+    loggedIn: [
+      { label: "Shop", path: "/shop" },
+      { label: "Messages", path: "/messages" },
+      { label: "My Favourites", path: "/my_shop" },
+      { label: "My Shop", path: "/my_account" },
+      {
+        label: "My Account",
+        path: "/my_shop",
+        sublinks: [
+          { label: "Edit Account", path: "/edit_account" },
+          { label: "Logout", path: "/logout" }
+        ]
+      }
+    ],
+    loggedOut: [
+      { label: "Sign In", path: "/signin" },
+      { label: "Sign Up", path: "/signup" }
+    ]
+  };
+  const [ModifyLinks, setModifyLinks] = useState(mainUrls[Login]);
+
+  useEffect(() => {
+    if (currentPage === "/signin" && Login === "loggedOut") {
+      setModifyLinks([{ label: "Sign Up", path: "/signup" }]);
+    } else if (currentPage === "/signup" && Login === "loggedOut") {
+      setModifyLinks([{ label: "Sign In", path: "/signin" }]);
+    } else {
+      setModifyLinks(mainUrls[Login]);
+    }
+  }, [Login]);
+
+  return (
+    <div>
+      {ModifyLinks.map((linked, i) => {
+        if (linked.sublinks) {
+          return (
+            <MyAccount
+              items={linked.sublinks}
+              label={linked.label}
+              key={i}
+              Logout={Logout}
+            />
+          );
+        } else {
+          return (
+            <Link href={linked.path} className={classes.link} key={i}>
+              {linked.label}
+            </Link>
+          );
+        }
+      })}
+    </div>
+  );
+}
+
+function MyAccount({ items, label, Logout }) {
+  const classes = navStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const history = useHistory();
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
-  if (path === "/signin" || path === "/signup") {
-    return (
-      <Link href={urls[path].oppPath} className={classes.link}>
-        {urls[path].oppLabel}
+  const MenuItemChildren = (
+    <Menu
+      id="simple-menu"
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
+    >
+      {items.map((item, index) => {
+        if (item.label === "Logout") {
+          return (
+            <MenuItem onClick={() => Logout(history)} key={index}>
+              <Icon>power_settings_new</Icon>
+              {item.label}
+            </MenuItem>
+          );
+        } else {
+          return (
+            <MenuItem
+              key={index}
+              onClick={() => {
+                history.push(item.path);
+              }}
+            >
+              {item.label}
+            </MenuItem>
+          );
+        }
+      })}
+    </Menu>
+  );
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  return (
+    <React.Fragment>
+      <Link className={classes.link} onMouseOverCapture={handleClick}>
+        {label}
       </Link>
-    );
-  }
-  let links = [];
-  Object.keys(urls).forEach((entry, i) => {
-    return links.push(
-      <Link href={entry} className={classes.link} key={i}>
-        {urls[entry].label}
-      </Link>
-    );
-  });
-  return links;
+      {MenuItemChildren}
+    </React.Fragment>
+  );
+
 }
 
 export default function Navbar() {
   const classes = navStyles();
+  const [Login, , Logout] = useContext(LoginContext);
 
   return (
     <BrowserRouter>
@@ -109,7 +208,7 @@ export default function Navbar() {
           </Typography>
 
           <nav>
-            <SigninPaths />
+            <SigninPaths Logout={Logout} Login={Login} />
           </nav>
         </Toolbar>
       </AppBar>
