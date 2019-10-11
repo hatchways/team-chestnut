@@ -9,7 +9,8 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRouter from "./routes/auth";
 import shopRouter from "./routes/shop";
-import users from "./schemas/users";
+import users from './schemas/users';
+import shop from './schemas/shop';
 
 const app = express();
 
