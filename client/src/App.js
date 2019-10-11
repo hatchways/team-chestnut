@@ -6,9 +6,11 @@ import { theme } from "./themes/theme";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/navbar/navbar";
 import SignAll from "./pages/SignAll";
+import MyShop from "./pages/MyShop";
 import "./App.css";
 
 function App() {
+  // Note: Change routes back after done with my shop ticket
   return (
     <MuiThemeProvider theme={theme}>
       <Navbar />
@@ -17,6 +19,7 @@ function App() {
           <Route exact path="/" component={LandingPage} />
           <Route path="/signin" component={SignAll} />
           <Route path="/signup" component={SignAll} />
+          <Route path="/myshop" component={MyShop} />
         </Switch>
       </BrowserRouter>
     </MuiThemeProvider>
