@@ -11,7 +11,7 @@ import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/admin";
 
 function App() {
-  // Note: Change routes back after done with my shop ticket
+  
   return (
     <LoginProvider>
       <MuiThemeProvider theme={theme}>
