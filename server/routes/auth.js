@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { registerValidation, loginValidation } = require('../validation');
 
+
 router.post('/register', async (req, res) => {
     // validate data before 
     console.log('i am hitting register end point');
@@ -52,5 +53,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
     res.header('auth-token', token).send({token});
 });
+
+
 
 module.exports = router;

@@ -10,6 +10,7 @@ import pingRouter from "./routes/ping";
 import authRouter from "./routes/auth";
 import shopRouter from "./routes/shop";
 import users from './schemas/users';
+import shop from './schemas/shop';
 
 let app = express();
 
