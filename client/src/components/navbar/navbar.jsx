@@ -63,11 +63,10 @@ const navStyles = makeStyles(theme => ({
   }
 }));
 
-function SigninPaths() {
+function SigninPaths({ Logout, Login }) {
   const classes = navStyles();
   const location = useLocation();
   const currentPage = location.pathname;
-  const [Login] = useContext(LoginContext);
 
   const mainUrls = {
     loggedIn: [
@@ -109,8 +108,8 @@ function SigninPaths() {
             <MyAccount
               items={linked.sublinks}
               label={linked.label}
-              path={linked.path}
               key={i}
+              Logout={Logout}
             />
           );
         } else {
@@ -125,20 +124,13 @@ function SigninPaths() {
   );
 }
 
-function MyAccount({ items, label, path }) {
+function MyAccount({ items, label, Logout }) {
   const classes = navStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [Login, setLogin] = useContext(LoginContext);
-  let history = useHistory();
+  const history = useHistory();
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const Logout = () => {
-    localStorage.removeItem("token");
-    setLogin("loggedOut");
-    history.push("/");
   };
 
   const MenuItemChildren = (
@@ -152,7 +144,7 @@ function MyAccount({ items, label, path }) {
       {items.map((item, index) => {
         if (item.label === "Logout") {
           return (
-            <MenuItem onClick={Logout} key={index}>
+            <MenuItem onClick={() => Logout(history)} key={index}>
               <Icon>power_settings_new</Icon>
               {item.label}
             </MenuItem>
@@ -189,6 +181,7 @@ function MyAccount({ items, label, path }) {
 
 export default function Navbar() {
   const classes = navStyles();
+  const [Login, , Logout] = useContext(LoginContext);
 
   return (
     <BrowserRouter>
@@ -213,7 +206,7 @@ export default function Navbar() {
           </Typography>
 
           <nav>
-            <SigninPaths />
+            <SigninPaths Logout={Logout} Login={Login} />
           </nav>
         </Toolbar>
       </AppBar>

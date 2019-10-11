@@ -158,7 +158,6 @@ export default function SignAll() {
     }
   };
 
-
   function handleSubmit(e) {
     e.preventDefault();
     if (!validateEmail(email)) {

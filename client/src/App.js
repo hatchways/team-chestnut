@@ -1,20 +1,18 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-
 import { theme } from "./themes/theme";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/navbar/navbar";
 import SignAll from "./pages/SignAll";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
-import Admin from './pages/admin';
+import Admin from "./pages/admin";
 
 function App() {
   return (
     <LoginProvider>
-    <MuiThemeProvider theme={theme}>
-     
+      <MuiThemeProvider theme={theme}>
         <Navbar />
         <BrowserRouter>
           <Switch>
@@ -24,8 +22,7 @@ function App() {
             <Route path="/admin" component={Admin} />
           </Switch>
         </BrowserRouter>
-     
-    </MuiThemeProvider>
+      </MuiThemeProvider>
     </LoginProvider>
   );
 }
