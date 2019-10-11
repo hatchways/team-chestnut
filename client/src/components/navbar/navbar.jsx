@@ -1,15 +1,11 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLocation } from "react-router-dom";
+import { useLocation, BrowserRouter } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import { BrowserRouter } from "react-router-dom";
-import Logo from '../../Assets/images/birthday-cake-solid.svg';
-
-
-// console.log(cakeLogo);
+import Logo from "../../Assets/images/birthday-cake-solid.svg";
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -75,17 +71,16 @@ function SigninPaths() {
         {urls[path].oppLabel}
       </Link>
     );
-  } else {
-    let links = [];
-    Object.keys(urls).forEach((entry, i) => {
-      return links.push(
-        <Link href={entry} className={classes.link} key={i}>
-          {urls[entry].label}
-        </Link>
-      );
-    });
-    return links;
   }
+  let links = [];
+  Object.keys(urls).forEach((entry, i) => {
+    return links.push(
+      <Link href={entry} className={classes.link} key={i}>
+        {urls[entry].label}
+      </Link>
+    );
+  });
+  return links;
 }
 
 export default function Navbar() {

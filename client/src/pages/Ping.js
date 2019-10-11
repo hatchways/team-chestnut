@@ -1,13 +1,14 @@
 import { FormControl, TextField, Button, Typography } from "@material-ui/core";
-
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
-function Ping(props) {
+export default function Ping(props) {
   const [result, setResult] = useState("");
   const [answer, setAnswer] = useState("");
+
   useEffect(() => {
     props.incrementStep();
-  }, []);
+  }, [props]);
 
   const submitAnswer = () => {
     let status;
@@ -21,7 +22,7 @@ function Ping(props) {
       .then(res => {
         status = res.status;
         if (status < 500) return res.json();
-        else throw Error("Server error");
+        throw Error("Server error");
       })
       .then(res => {
         setResult(res.response);
@@ -42,7 +43,7 @@ function Ping(props) {
 
       <FormControl>
         <TextField
-          label={"first name"}
+          label="first name"
           onChange={e => setAnswer(e.target.value)}
         />
       </FormControl>
@@ -51,4 +52,6 @@ function Ping(props) {
   );
 }
 
-export default Ping;
+Ping.propTypes = {
+  incrementStep: PropTypes.func.isRequired
+};

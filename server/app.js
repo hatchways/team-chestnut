@@ -9,37 +9,34 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRouter from "./routes/auth";
 import shopRouter from "./routes/shop";
-import users from './schemas/users';
+import users from "./schemas/users";
 
-let app = express();
+const app = express();
 
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log('Mongoose has connected to the database!')
+  () => console.log("Mongoose has connected to the database!")
 );
-let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-      console.log("you are connected");
-
- users.find({ 'id': 1 }, function (err, found) {
-  if (err) console.log("Error in users: ",err);
-  if (found.length == 0){
-      let newUser = {
-        id: 1,
-        account_type: "Admin",
-        // change your name here - David -------
-        first_name: "Naresh",  
-        last_name: "Akkarapaka",
-      };
-      users.create( newUser, function (err, user) {
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function() {
+  console.log("you are connected");
+  const newUser = {
+    account_type: "Admin",
+    name: "David Bertozzi",
+    password: "hatchways",
+    email: "david.a.bertozzi@gmail.com"
+  };
+  users.find({ email: newUser.email }, function(err, found) {
+    if (err) console.log("Error in users: ", err);
+    if (found.length == 0) {
+      users.create(newUser, function(err, user) {
         if (err) console.log("Error:", err);
-        else console.log("I am the new user",user);
+        else console.log("I am the new user", user);
       });
-  }
-  else console.log("Found results:",found);
-});
+    } else console.log("Found results:", found);
+  });
 });
 
 app.use(logger("dev"));
