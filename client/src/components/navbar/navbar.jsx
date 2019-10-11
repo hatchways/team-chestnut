@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLocation } from "react-router-dom";
+import { useLocation, BrowserRouter } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
@@ -14,6 +14,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import Icon from "@material-ui/core/Icon";
+
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -177,6 +178,7 @@ function MyAccount({ items, label, Logout }) {
       {MenuItemChildren}
     </React.Fragment>
   );
+
 }
 
 export default function Navbar() {
