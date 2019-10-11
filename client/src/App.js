@@ -10,6 +10,7 @@ import MyShop from "./pages/MyShop";
 import "./App.css";
 
 function App() {
+  // Note: Change routes back after done with my shop ticket
   return (
     <MuiThemeProvider theme={theme}>
       <Navbar />
