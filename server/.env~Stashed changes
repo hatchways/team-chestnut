@@ -1,0 +1,7 @@
+TEAM_NAME="Aecio, Marco, Test, David, Naresh"
+DB_CONNECT = mongodb://localhost/bakeryshop
+TOKEN_SECRET = alksdnoasdlkasdj
+BUCKET_NAME = team-chestnut
+IAM_USER_KEY = AKIASQDH4E4QX4PBONX7
+IAM_USER_SECRET = 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
+BUCKET_REGION = us-east-1
