@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from "react";
-import { LoginContext } from "../contexts/LoginContext";
 import { useHistory } from "react-router-dom";
+import { LoginContext } from "../contexts/LoginContext";
 
 export default function Admin() {
-  let history = useHistory();
+  const history = useHistory();
   const [Login] = useContext(LoginContext);
 
   useEffect(() => {
     if (Login === "loggedOut") {
       history.push("/signin");
     }
-  }, [Login]);
+  }, [Login, history]);
 
   return <p> I am on the admin page</p>;
 }

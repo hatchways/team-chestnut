@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../schemas/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+import mongoose from 'mongoose';
 const { registerValidation, loginValidation } = require("../validation");
 
 router.post("/register", async (req, res) => {
@@ -22,6 +23,7 @@ router.post("/register", async (req, res) => {
 
   // create new user
   const user = new User({
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword

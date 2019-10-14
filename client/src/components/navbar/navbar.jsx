@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLocation, BrowserRouter } from "react-router-dom";
+import { useLocation, BrowserRouter, useHistory } from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
 import { useHistory } from "react-router-dom";
@@ -13,7 +14,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import Icon from "@material-ui/core/Icon";
-
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -117,13 +117,12 @@ function SigninPaths({ Logout, Login }) {
               Logout={Logout}
             />
           );
-        } else {
-          return (
-            <Link href={linked.path} className={classes.link} key={i}>
-              {linked.label}
-            </Link>
-          );
         }
+        return (
+          <Link href={linked.path} className={classes.link} key={i}>
+            {linked.label}
+          </Link>
+        );
       })}
     </div>
   );
@@ -149,23 +148,22 @@ function MyAccount({ items, label, Logout }) {
       {items.map((item, index) => {
         if (item.label === "Logout") {
           return (
-            <MenuItem onClick={() => Logout(history)} key={index}>
+            <MenuItem onClick={() => Logout(history)} key={item}>
               <Icon>power_settings_new</Icon>
               {item.label}
             </MenuItem>
           );
-        } else {
-          return (
-            <MenuItem
-              key={index}
-              onClick={() => {
-                history.push(item.path);
-              }}
-            >
-              {item.label}
-            </MenuItem>
-          );
         }
+        return (
+          <MenuItem
+            key={item}
+            onClick={() => {
+              history.push(item.path);
+            }}
+          >
+            {item.label}
+          </MenuItem>
+        );
       })}
     </Menu>
   );
@@ -182,7 +180,6 @@ function MyAccount({ items, label, Logout }) {
       {MenuItemChildren}
     </React.Fragment>
   );
-
 }
 
 export default function Navbar() {
@@ -207,7 +204,8 @@ export default function Navbar() {
                 alt="logo"
                 className={classes.logoImage}
               />
-              <br></br>BAKERY SHOP
+              <br />
+              BAKERY SHOP
             </Link>
           </Typography>
 
