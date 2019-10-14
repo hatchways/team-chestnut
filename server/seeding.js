@@ -16,35 +16,35 @@ const items = [
     price: 120,
     description: "The tastiest wedding cake",
     category: "Cake",
-    Photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
   },
   {
     title: "Macarons",
     price: 60,
     description: "It a delicious cookie of french style",
     category: "Cookie",
-    Photos: ["https://team-chestnut.s3.amazonaws.com/157101601079"]
+    photos: ["https://team-chestnut.s3.amazonaws.com/157101601079"]
   },
   {
     title: "Rose Wedding Cake",
     price: 120,
     description: "The tastiest wedding cake",
     category: "Cake",
-    Photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
   },
   {
     title: "Rose Wedding Cake",
     price: 120,
     description: "The tastiest wedding cake",
     category: "Cake",
-    Photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
   },
   {
     title: "Rose Wedding Cake",
     price: 120,
     description: "The tastiest wedding cake",
     category: "Cake",
-    Photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
   }
 ];
 
