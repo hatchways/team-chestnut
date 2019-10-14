@@ -1,7 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
 //Users SCHEMA
 const usersSchema = new mongoose.Schema({
-  //_id: mongoose.Schema.Types.ObjectId,
+  _id: mongoose.Schema.Types.ObjectId,
   name: {
     type: String,
     required: true,
@@ -24,7 +25,7 @@ const usersSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  shop: { type: mongoose.Schema.Types.ObjectId, ref: "shop" }
+  shop: { type: mongoose.Schema.Types.ObjectId, ref: "shops" }
 });
 
 module.exports = mongoose.model("users", usersSchema);

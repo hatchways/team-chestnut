@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema({
   title: { type: String },
@@ -22,4 +22,4 @@ let shopSchema = new mongoose.Schema({
   items: [itemSchema]
 });
 
-module.exports = mongoose.model("shop", shopSchema);
+module.exports = mongoose.model("shops", shopSchema);
