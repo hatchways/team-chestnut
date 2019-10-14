@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
@@ -12,12 +13,9 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { makeStyles } from "@material-ui/core/styles";
-import { LoginContext } from "../contexts/LoginContext";
 
 const useStyles = makeStyles(theme => ({
   image: {
-    backgroundImage:
-      "url(https://glutenfreecuppatea.co.uk/wp-content/uploads/2019/05/gluten-free-victoria-sponge-recipe-dairy-free-featured-1.jpg)",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
     backgroundPosition: "center"
@@ -78,32 +76,55 @@ export default function Shop() {
   // material ui styles init
   const classes = useStyles();
 
-  // data to use until fetch is set up
-  const shopDetailsCopy = {
-    title: "MAPLE BAKERY",
-    description: `Welcome to my bakery! I've been baking for 8 years and have 
-      recently decided to expand online. I specialize in wedding cakes and party favours. 
-      Please contact me for more information!`
-  };
-  const products = [
-    {
-      name: "Rose Wedding Cake",
-      image:
-        "https://asset1.cxnmarksandspencer.com/is/image/mands/SD_FD_F09A_00161435_NC_X_EC_0?$PDP_MAIN_CAR_LG$",
-      price: "$120"
-    },
-    {
-      name: "4-Tier Pink Roses Wedding Cake",
-      image:
-        "https://secureservercdn.net/160.153.137.20/bd4.bc0.myftpupload.com/wp-content/uploads/2018/11/RachelFrancis-238.jpg",
-      price: "$120"
-    }
-  ];
-  const [cardLiked, setCardLiked] = useState(
-    new Array(products.length).fill(false)
-  );
-  // add logic in future for determining whether edit button is shown
+  const [shop, setShop] = useState({
+    cover_photo: "",
+    description: "",
+    items: [{ title: "", photos: [""], price: "" }],
+    title: "",
+    user: ""
+  });
   const [isMyShop, setIsMyShop] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [cardLiked, setCardLiked] = useState(
+    new Array(shop.items.length).fill(false)
+  );
+  // fetch shop data
+  const token = localStorage.getItem("token");
+  const USER_API = "http://localhost:3001/users/";
+  // user id will be from userContext in the future
+  const userid = "5da4c98f912176179cb35e43";
+  useEffect(() => {
+    async function fetchShop() {
+      try {
+        const result = await axios.get(`${USER_API}${userid}`, {
+          params: { userid },
+          headers: { "auth-token": token }
+        });
+        setShop(result.data.shop);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err);
+      }
+    }
+    setIsLoading(true);
+    fetchShop();
+    // both of these do not work for now
+    // need them to run after setShop() has been updated with fetched data
+    // adding shop to useEffect dependency made it rerender continually
+    setCardLiked(new Array(shop.items.length).fill(false));
+    setIsMyShop(userid === shop.user);
+  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error !== null) {
+    return <div>{error}</div>;
+  }
+  // because our seed data is repetitive I had to use map index in the key
+  // to avoid error being thrown
+  // Could also probably restructure this code with more functions
   return (
     <>
       <Grid container component="main">
@@ -112,10 +133,10 @@ export default function Shop() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
-              {shopDetailsCopy.title}
+              {shop.title}
             </Typography>
             <Typography className={classes.shopDescription}>
-              {shopDetailsCopy.description}
+              {shop.description}
             </Typography>
             <Button
               fullWidth
@@ -126,7 +147,14 @@ export default function Shop() {
             </Button>
           </div>
         </Grid>
-        <Grid item xs={false} sm={4} md={7} className={classes.image}>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          className={classes.image}
+          style={{ backgroundImage: `url(${shop.cover_photo})` }}
+        >
           <Button
             className={classes.editCoverBtn}
             style={isMyShop ? { display: "intial" } : { display: "none" }}
@@ -137,8 +165,14 @@ export default function Shop() {
       </Grid>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {products.map((card, index) => (
-            <Grid item key={`${card.name}${card.price}`} xs={12} sm={6} md={4}>
+          {shop.items.map((product, index) => (
+            <Grid
+              item
+              key={`${product.title}${product.price}${index}`}
+              xs={12}
+              sm={6}
+              md={4}
+            >
               <Card className={classes.card}>
                 <div className={classes.cardHeader}>
                   <SettingsIcon className={classes.cardSettingBtn} />
@@ -177,14 +211,14 @@ export default function Shop() {
                 </div>
                 <CardMedia
                   className={classes.cardMedia}
-                  image={card.image}
-                  title={card.title}
+                  image={product.photos[0]}
+                  title={product.title}
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {card.name}
+                    {product.title}
                   </Typography>
-                  <Typography>{card.price}</Typography>
+                  <Typography>{product.price}</Typography>
                 </CardContent>
               </Card>
             </Grid>
