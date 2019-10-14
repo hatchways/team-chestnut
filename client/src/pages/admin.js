@@ -10,7 +10,7 @@ export default function Admin() {
     if (Login === "loggedOut") {
       history.push("/signin");
     }
-  }, [Login]);
+  }, [Login, history]);
 
   return <p> I am on the admin page</p>;
 }

@@ -5,7 +5,6 @@ import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import { BrowserRouter } from "react-router-dom";
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
 import { useHistory } from "react-router-dom";
@@ -99,6 +98,11 @@ function SigninPaths({ Logout, Login }) {
     } else {
       setModifyLinks(mainUrls[Login]);
     }
+
+    return ()=> {
+      
+    }
+    
   }, [Login]);
 
   return (

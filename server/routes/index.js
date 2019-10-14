@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const User = require("../schemas/users");
-const jwt = require("jsonwebtoken");
 const verify = require("./verify-token");
 
 router.get("/welcome", function(req, res, next) {

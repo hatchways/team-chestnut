@@ -9,8 +9,7 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRouter from "./routes/auth";
 import shopRouter from "./routes/shop";
-import users from './schemas/users';
-import shop from './schemas/shop';
+import seeding from "./seeding";
 
 const app = express();
 
@@ -22,22 +21,7 @@ mongoose.connect(
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
-  console.log("you are connected");
-  const newUser = {
-    account_type: "Admin",
-    name: "David Bertozzi",
-    password: "hatchways",
-    email: "david.a.bertozzi@gmail.com"
-  };
-  users.find({ email: newUser.email }, function(err, found) {
-    if (err) console.log("Error in users: ", err);
-    if (found.length == 0) {
-      users.create(newUser, function(err, user) {
-        if (err) console.log("Error:", err);
-        else console.log("I am the new user", user);
-      });
-    } else console.log("Found results:", found);
-  });
+  seeding();
 });
 
 app.use(logger("dev"));
