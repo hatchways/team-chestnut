@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { makeStyles } from "@material-ui/core/styles";
+import jwt from "jsonwebtoken";
 
 const useStyles = makeStyles(theme => ({
   image: {
@@ -72,29 +73,76 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const dataFetchReducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_INIT":
+      return {
+        ...state,
+        isLoading: true,
+        error: null
+      };
+    case "FETCH_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        isMyShop: action.payload.user === action.user,
+        shopData: {
+          ...action.payload,
+          items: action.payload.items.map(product => {
+            return { ...product, isLiked: false };
+          })
+        }
+      };
+    case "FETCH_FAILURE":
+      return {
+        ...state,
+        isLoading: false,
+        error: action.error
+      };
+    case "PRODUCT_LIKED":
+      return {
+        ...state,
+        shopData: {
+          ...state.shopData,
+          items: state.shopData.items.map((product, index) => {
+            return index === action.likeIndex
+              ? {
+                  ...product,
+                  isLiked: !product.isLiked
+                }
+              : product;
+          })
+        }
+      };
+    default:
+      console.log("default case");
+  }
+};
+
 export default function Shop() {
   // material ui styles init
   const classes = useStyles();
 
-  const [shop, setShop] = useState({
-    cover_photo: "",
-    description: "",
-    items: [{ title: "", photos: [""], price: "" }],
-    title: "",
-    user: ""
+  const [shop, dispatch] = useReducer(dataFetchReducer, {
+    shopData: {
+      cover_photo: "",
+      description: "",
+      items: [{ title: "", photos: [""], price: "", isLiked: false }],
+      title: "",
+      user: ""
+    },
+    isMyShop: false,
+    error: null,
+    isLoading: false
   });
-  const [isMyShop, setIsMyShop] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const [cardLiked, setCardLiked] = useState(
-    new Array(shop.items.length).fill(false)
-  );
   // fetch shop data
   const token = localStorage.getItem("token");
   const USER_API = "http://localhost:3001/users/";
   // user id will be from userContext in the future
-  const userid = "5da4c98f912176179cb35e43";
+  const decoded = jwt.decode(token, { complete: true });
+  const userid = decoded.payload._id;
   useEffect(() => {
     async function fetchShop() {
       try {
@@ -102,25 +150,23 @@ export default function Shop() {
           params: { userid },
           headers: { "auth-token": token }
         });
-        setShop(result.data.shop);
-        setIsLoading(false);
+        dispatch({
+          type: "FETCH_SUCCESS",
+          payload: result.data.shop,
+          user: userid
+        });
       } catch (err) {
-        setError(err);
+        dispatch({ type: "FETCH_FAILURE", error: err });
       }
     }
-    setIsLoading(true);
+    dispatch({ type: "FETCH_INIT" });
     fetchShop();
-    // both of these do not work for now
-    // need them to run after setShop() has been updated with fetched data
-    // adding shop to useEffect dependency made it rerender continually
-    setCardLiked(new Array(shop.items.length).fill(false));
-    setIsMyShop(userid === shop.user);
   }, []);
-  if (isLoading) {
+  if (shop.isLoading) {
     return <div>Loading...</div>;
   }
-  if (error !== null) {
-    return <div>{error}</div>;
+  if (shop.error !== null) {
+    return <div>{shop.error}</div>;
   }
   // because our seed data is repetitive I had to use map index in the key
   // to avoid error being thrown
@@ -133,10 +179,10 @@ export default function Shop() {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
-              {shop.title}
+              {shop.shopData.title}
             </Typography>
             <Typography className={classes.shopDescription}>
-              {shop.description}
+              {shop.shopData.description}
             </Typography>
             <Button
               fullWidth
@@ -153,11 +199,11 @@ export default function Shop() {
           sm={4}
           md={7}
           className={classes.image}
-          style={{ backgroundImage: `url(${shop.cover_photo})` }}
+          style={{ backgroundImage: `url(${shop.shopData.cover_photo})` }}
         >
           <Button
             className={classes.editCoverBtn}
-            style={isMyShop ? { display: "intial" } : { display: "none" }}
+            style={shop.isMyShop ? { display: "intial" } : { display: "none" }}
           >
             Edit Cover
           </Button>
@@ -165,7 +211,7 @@ export default function Shop() {
       </Grid>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
-          {shop.items.map((product, index) => (
+          {shop.shopData.items.map((product, index) => (
             <Grid
               item
               key={`${product.title}${product.price}${index}`}
@@ -179,33 +225,25 @@ export default function Shop() {
                   <FavoriteIcon
                     className={classes.cardLikedBtn}
                     style={
-                      cardLiked[index] === false
+                      product.isLiked === false
                         ? { display: "none" }
                         : { display: "initial" }
                     }
                     onClick={() =>
-                      setCardLiked(
-                        cardLiked.map((like, i) => {
-                          return i === index ? !like : like;
-                        })
-                      )
+                      dispatch({ type: "PRODUCT_LIKED", likeIndex: index })
                     }
                   />
                   <FavoriteBorderOutlinedIcon
                     className={classes.cardLikedBtn}
                     style={
-                      cardLiked[index] === false
+                      product.isLiked === false
                         ? {
                             display: "initial"
                           }
                         : { display: "none" }
                     }
                     onClick={() =>
-                      setCardLiked(
-                        cardLiked.map((like, i) => {
-                          return i === index ? !like : like;
-                        })
-                      )
+                      dispatch({ type: "PRODUCT_LIKED", likeIndex: index })
                     }
                   />
                 </div>
