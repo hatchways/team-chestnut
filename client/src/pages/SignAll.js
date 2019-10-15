@@ -18,7 +18,6 @@ import clsx from "clsx";
 import IconButton from "@material-ui/core/IconButton";
 import { LoginContext } from "../contexts/LoginContext";
 import { useHistory } from "react-router-dom";
-
 import { useLocation } from "react-router";
 
 const useStyles = makeStyles(theme => ({

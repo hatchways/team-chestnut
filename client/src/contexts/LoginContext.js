@@ -1,10 +1,12 @@
 import React, { createContext, useState } from "react";
+
 export const LoginContext = createContext();
 
 export const LoginProvider = props => {
-  let logged = localStorage.getItem("token") === null ? "loggedOut" : "loggedIn";
+  let logged =
+    localStorage.getItem("token") === null ? "loggedOut" : "loggedIn";
   const [Login, setLogin] = useState(logged);
-
+  const [admin, setAdmin] = useState(false);
   const Logout = history => {
     localStorage.removeItem("token");
     setLogin("loggedOut");
