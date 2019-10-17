@@ -97,7 +97,7 @@ function SigninPaths(props) {
     }
 
     return () => {};
-  }, [props.login]);
+  }, [props.login, currentPage]);
 
   return (
     <div>

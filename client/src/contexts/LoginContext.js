@@ -9,8 +9,6 @@ export const LoginProvider = props => {
   const Logout = history => {
     localStorage.removeItem("token");
     setLogin("loggedOut");
-    history.push({ pathname: "/" });
-    window.location.href = window.location.href;
   };
 
   return (
