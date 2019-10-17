@@ -1,20 +1,20 @@
 import React, { createContext, useState } from "react";
-
+import jwt from "jsonwebtoken";
 export const LoginContext = createContext();
 
 export const LoginProvider = props => {
-  let logged =
-    localStorage.getItem("token") === null ? "loggedOut" : "loggedIn";
-  const [Login, setLogin] = useState(logged);
-  const [admin, setAdmin] = useState(false);
+  const token = localStorage.getItem("token");
+  const [login, setLogin] = useState(token === null ? "loggedOut" : "loggedIn");
+  const [user, setUser] = useState(token === null ? null : jwt.decode(token));
   const Logout = history => {
     localStorage.removeItem("token");
     setLogin("loggedOut");
-    history.push("/");
+    history.push({ pathname: "/" });
+    window.location.href = window.location.href;
   };
 
   return (
-    <LoginContext.Provider value={[Login, setLogin, Logout]}>
+    <LoginContext.Provider value={{ login, setLogin, Logout, user, setUser }}>
       {props.children}
     </LoginContext.Provider>
   );

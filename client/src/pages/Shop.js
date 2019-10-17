@@ -147,7 +147,6 @@ export default function Shop() {
     async function fetchShop() {
       try {
         const result = await axios.get(`${USER_API}${userid}`, {
-          params: { userid },
           headers: { "auth-token": token }
         });
         dispatch({
@@ -156,10 +155,11 @@ export default function Shop() {
           user: userid
         });
       } catch (err) {
-        dispatch({ type: "FETCH_FAILURE", error: err });
+        dispatch({ type: "FETCH_FAILURE", error: err.message });
       }
     }
     dispatch({ type: "FETCH_INIT" });
+   
     fetchShop();
   }, []);
   if (shop.isLoading) {

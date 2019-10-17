@@ -12,8 +12,6 @@ import Icon from "@material-ui/core/Icon";
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
 
-
-
 const navStyles = makeStyles(theme => ({
   "@global": {
     ".MuiButton-root": {
@@ -62,7 +60,7 @@ const navStyles = makeStyles(theme => ({
   }
 }));
 
-function SigninPaths({ Logout, Login }) {
+function SigninPaths(props) {
   const classes = navStyles();
   const location = useLocation();
   const currentPage = location.pathname;
@@ -87,22 +85,19 @@ function SigninPaths({ Logout, Login }) {
       { label: "Sign Up", path: "/signup" }
     ]
   };
-  const [ModifyLinks, setModifyLinks] = useState(mainUrls[Login]);
+  const [ModifyLinks, setModifyLinks] = useState(mainUrls[props.login]);
 
   useEffect(() => {
-    if (currentPage === "/signin" && Login === "loggedOut") {
+    if (currentPage === "/signin" && props.login === "loggedOut") {
       setModifyLinks([{ label: "Sign Up", path: "/signup" }]);
-    } else if (currentPage === "/signup" && Login === "loggedOut") {
+    } else if (currentPage === "/signup" && props.login === "loggedOut") {
       setModifyLinks([{ label: "Sign In", path: "/signin" }]);
     } else {
-      setModifyLinks(mainUrls[Login]);
+      setModifyLinks(mainUrls[props.login]);
     }
 
-    return ()=> {
-      
-    }
-    
-  }, [Login]);
+    return () => {};
+  }, [props.login]);
 
   return (
     <div>
@@ -113,7 +108,7 @@ function SigninPaths({ Logout, Login }) {
               items={linked.sublinks}
               label={linked.label}
               key={i}
-              Logout={Logout}
+              Logout={props.Logout}
             />
           );
         }
@@ -147,7 +142,7 @@ function MyAccount({ items, label, Logout }) {
       {items.map((item, index) => {
         if (item.label === "Logout") {
           return (
-            <MenuItem onClick={() => Logout(history)} key={item}>
+            <MenuItem onClick={() => Logout(history)} key={index}>
               <Icon>power_settings_new</Icon>
               {item.label}
             </MenuItem>
@@ -155,7 +150,7 @@ function MyAccount({ items, label, Logout }) {
         }
         return (
           <MenuItem
-            key={item}
+            key={index}
             onClick={() => {
               history.push(item.path);
             }}
@@ -183,7 +178,7 @@ function MyAccount({ items, label, Logout }) {
 
 export default function Navbar() {
   const classes = navStyles();
-  const [Login, , Logout] = useContext(LoginContext);
+  const props = useContext(LoginContext);
 
   return (
     <BrowserRouter>
@@ -209,7 +204,7 @@ export default function Navbar() {
           </Typography>
 
           <nav>
-            <SigninPaths Logout={Logout} Login={Login} />
+            <SigninPaths {...props} />
           </nav>
         </Toolbar>
       </AppBar>

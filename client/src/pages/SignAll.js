@@ -73,7 +73,7 @@ export default function SignAll() {
   const classes = useStyles();
   const location = useLocation();
   let history = useHistory();
-  const [Login, setLogin] = useContext(LoginContext);
+  const props = useContext(LoginContext);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -89,7 +89,7 @@ export default function SignAll() {
   const [open, setOpen] = useState(false);
   const [Icon, setIcon] = useState(InfoIcon);
 
-  if (Login === "loggedin") {
+  if (props.login === "loggedin") {
     history.push("/");
   }
 
@@ -206,7 +206,7 @@ export default function SignAll() {
             setOpen(true);
           } else {
             localStorage.setItem("token", res.token);
-            setLogin("loggedIn");
+            props.setLogin("loggedIn");
             history.push("/admin");
           }
         })
@@ -259,6 +259,7 @@ export default function SignAll() {
                 id={entry}
                 label={textLabels[entry].label}
                 name={entry}
+                type ={entry === 'password' || entry === 'email'? entry : 'text' }
                 autoComplete={entry}
                 autoFocus={textLabels[entry].focus}
                 onChange={handleChange(entry)}
