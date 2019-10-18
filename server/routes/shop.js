@@ -1,6 +1,6 @@
-import express from "express";
-import upload from '../services/file-upload';
-import verify  from "./verify-token";
+const express = require("express");
+const upload = require ("../services/file-upload");
+const verify = require("./verify-token");
 
 const router = express.Router();
 const singleUpload = upload.single('image');

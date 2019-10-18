@@ -1,12 +1,4 @@
-import mongoose from "mongoose";
-
-const itemSchema = new mongoose.Schema({
-  title: { type: String },
-  price: { type: Number },
-  description: { type: String },
-  category: { type: String },
-  photos: [{ type: String }]
-});
+const mongoose = require("mongoose");
 
 let shopSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
@@ -19,7 +11,7 @@ let shopSchema = new mongoose.Schema({
   cover_photo: {
     type: String
   },
-  items: [itemSchema]
+  items:  [{ type: mongoose.Schema.Types.ObjectId, ref: "items" }],
 });
 
 module.exports = mongoose.model("shops", shopSchema);

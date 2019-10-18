@@ -1,5 +1,6 @@
 const users = require("./schemas/users");
-const shop = require("./schemas/shop");
+const shops = require("./schemas/shops");
+const items = require("./schemas/items");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -10,7 +11,7 @@ const shopDetails = {
   cover_photo: "https://team-chestnut.s3.amazonaws.com/1570986365141"
 };
 
-const items = [
+const allItems = [
   {
     title: "Rose Wedding Cake",
     price: 120,
@@ -49,37 +50,66 @@ const items = [
 ];
 
 export default function seeding() {
-  users.findOne({ email: "bakery@admin.com" }, function(err, found) {
-    if (err) console.log("Error in users: ", err);
-    if (found == null) {
-      bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash("bakery", salt, function(err, hash) {
-          console.log("hashed password is: ", hash);
-          let user = new users({
-            _id: new mongoose.Types.ObjectId(),
-            name: "BakeryAdmin",
-            email: "bakery@admin.com",
-            password: hash
-          });
+  async function seed() {
+    const user = await users.findOne({ email: "bakery@admin.com" });
 
-          user.save(function(errs) {
-            if (errs) return handleError(errs);
-            console.log("user is saved");
-            let sh = new shop({
-              user: user._id,
-              description: shopDetails.description,
-              title: shopDetails.title,
-              cover_photo: shopDetails.cover_photo,
-              items: items
-            });
+    if (user === null) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash("bakery", salt);
 
-            sh.save(function(e) {
-              if (e) return handleError(e);
-              console.log("Shop is saved");
-            });
-          });
-        });
+      const newuser = new users({
+        _id: new mongoose.Types.ObjectId(),
+        name: "BakeryAdmin",
+        email: "bakery@admin.com",
+        password: hashedPassword
       });
-    } else console.log("Found results: ", found);
-  });
+
+      const savedUser = await newuser.save();
+
+      console.log("sved user", savedUser);
+
+      const shop = new shops({
+        user: savedUser._id,
+        description: shopDetails.description,
+        title: shopDetails.title,
+        cover_photo: shopDetails.cover_photo,
+        items: []
+      });
+
+      const savedShop = await shop.save();
+
+      console.log("saved shop", savedShop);
+
+      let itemId = [];
+      await asyncForEach(allItems, async (item, i) => {
+        let newItem = new items({
+          _id: new mongoose.Types.ObjectId(),
+          title: item.title,
+          price: item.price,
+          description: item.description,
+          category: item.category,
+          photos: item.photos
+        });
+
+        let savedItem = await newItem.save();
+
+        itemId.push(savedItem._id);
+      });
+
+      savedShop.items = itemId;
+
+      const newShop = await savedShop.save();
+
+      console.log("new shop", newShop);
+    }
+  }
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  seed();
 }
+

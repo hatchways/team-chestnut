@@ -2,7 +2,7 @@ const router = require("express").Router();
 const User = require("../schemas/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 const { registerValidation, loginValidation } = require("../validation");
 
 router.post("/register", async (req, res) => {
