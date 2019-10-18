@@ -1,6 +1,6 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { theme } from "./themes/theme";
 import LandingPage from "./pages/Landing";
 import Navbar from "./components/navbar/navbar";
@@ -9,9 +9,9 @@ import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/admin";
+import {ProtectedRoute} from './components/protectedRoute'
 
 function App() {
-
   return (
     <LoginProvider>
       <MuiThemeProvider theme={theme}>
@@ -19,10 +19,10 @@ function App() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={LandingPage} />
-            <Route path="/signin" component={SignAll} />
-            <Route path="/signup" component={SignAll} />
-            <Route path="/admin" component={Admin} />
-            <Route path="/shop" component={Shop} />
+            <Route exact path="/signin" component={SignAll} />
+            <Route exact path="/signup" component={SignAll} />
+            <ProtectedRoute exact path="/admin" component={Admin} />
+            <ProtectedRoute exact path="/shop" component={Shop} />
           </Switch>
         </BrowserRouter>
       </MuiThemeProvider>
