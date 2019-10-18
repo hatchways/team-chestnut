@@ -101,19 +101,18 @@ function SigninPaths(props) {
 
   return (
     <div>
-      {ModifyLinks.map((linked, i) => {
+      {ModifyLinks.map((linked) => {
         if (linked.sublinks) {
           return (
             <MyAccount
               items={linked.sublinks}
               label={linked.label}
-              key={i}
               Logout={props.Logout}
             />
           );
         }
         return (
-          <Link href={linked.path} className={classes.link} key={i}>
+          <Link href={linked.path} className={classes.link} key={linked.label}>
             {linked.label}
           </Link>
         );
@@ -139,10 +138,10 @@ function MyAccount({ items, label, Logout }) {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      {items.map((item, index) => {
+      {items.map((item) => {
         if (item.label === "Logout") {
           return (
-            <MenuItem onClick={() => Logout(history)} key={index}>
+            <MenuItem onClick={() => Logout(history)} key={item.label}>
               <Icon>power_settings_new</Icon>
               {item.label}
             </MenuItem>
@@ -150,7 +149,7 @@ function MyAccount({ items, label, Logout }) {
         }
         return (
           <MenuItem
-            key={index}
+            key={item.label}
             onClick={() => {
               history.push(item.path);
             }}
