@@ -108,6 +108,7 @@ function SigninPaths(props) {
               items={linked.sublinks}
               label={linked.label}
               Logout={props.Logout}
+              key={linked.label}
             />
           );
         }
