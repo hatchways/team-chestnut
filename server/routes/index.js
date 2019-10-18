@@ -11,9 +11,6 @@ router.get("/welcome", function(req, res, next) {
 router.get("/users/:userid", verify, async (req, res, next) => {
   const userid = req.params.userid;
   const token = req.header("auth-token");
-
-  verify;
-
   const user = await User.findOne(
     { _id: userid },
     { __v: false, password: false, date: false }
@@ -22,10 +19,9 @@ router.get("/users/:userid", verify, async (req, res, next) => {
   if (!user) return res.status(400).send({ message: "User is not found..." });
   console.log("user is:", user);
 
-  const shop = await shops.findOne(
-    { user: user._id },
-    { __v: false, _id: false, user: false }
-  ).populate('items', '-_id -__v');
+  const shop = await shops
+    .findOne({ user: user._id }, { __v: false, _id: false, user: false })
+    .populate("items", "-_id -__v");
   console.log("shop is", shop);
 
   res
