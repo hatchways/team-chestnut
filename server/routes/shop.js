@@ -1,14 +1,12 @@
-import express from "express";
-import upload from '../services/file-upload';
-import verify  from "./verify-token";
+const express = require("express");
+const upload = require ("../services/file-upload");
+const verify = require("./verify-token");
 
 const router = express.Router();
 const singleUpload = upload.single('image');
 
-router.post('/image-upload', function(req, res) {
+router.post('/image-upload',verify, function(req, res) {
   
-  verify;
-
   singleUpload(req, res, function(err) {
     if (err) {
       res.status(422).send({errors:[{title: 'File Upload Error', details: err.message}]});

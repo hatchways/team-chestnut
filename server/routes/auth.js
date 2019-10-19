@@ -2,12 +2,11 @@ const router = require("express").Router();
 const User = require("../schemas/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 const { registerValidation, loginValidation } = require("../validation");
 
 router.post("/register", async (req, res) => {
   // validate data before
-  console.log("i am hitting register end point");
   const { error } = registerValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
@@ -46,7 +45,6 @@ router.post("/register", async (req, res) => {
 // login
 router.post("/login", async (req, res) => {
   // validate user before
-  console.log("i am hitting register login point");
   const { error } = loginValidation(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);

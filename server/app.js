@@ -1,15 +1,17 @@
-import createError from "http-errors";
-import express, { json, urlencoded } from "express";
-import { join } from "path";
-import cookieParser from "cookie-parser";
-import logger from "morgan";
-import mongoose from "mongoose";
+const createError = require( "http-errors");
+const express = require( "express");
+const {json, urlencoded } = require('express');
 
-import indexRouter from "./routes/index";
-import pingRouter from "./routes/ping";
-import authRouter from "./routes/auth";
-import shopRouter from "./routes/shop";
-import seeding from "./seeding";
+const { join } = require( "path");
+const cookieParser = require( "cookie-parser");
+const logger = require( "morgan");
+const mongoose = require( "mongoose");
+
+const indexRouter = require( "./routes/index");
+const pingRouter = require( "./routes/ping");
+const authRouter = require( "./routes/auth");
+const shopRouter = require( "./routes/shop");
+const seeding = require( "./seeding");
 
 const app = express();
 
@@ -21,7 +23,7 @@ mongoose.connect(
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
-  seeding();
+  seeding.default();
 });
 
 app.use(logger("dev"));
@@ -48,7 +50,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.json({ error: err });
 });
 
 module.exports = app;

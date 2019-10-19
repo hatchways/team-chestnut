@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 //Users SCHEMA
 const usersSchema = new mongoose.Schema({
