@@ -9,7 +9,7 @@ aws.config.update({
 });
 const s3 = new aws.S3();
 const fileFilter = (req, file, cb) => {
-  console.log(file);
+  console.log('the upload file is ', file);
   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
     cb(null, true);
   } else {
@@ -27,7 +27,7 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function(req, file, cb) {
-      cb(null, Date.now().toString());
+      cb(null, file.originalname);
     }
   })
 });

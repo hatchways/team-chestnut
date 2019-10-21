@@ -12,7 +12,6 @@ const pingRouter = require( "./routes/ping");
 const authRouter = require( "./routes/auth");
 const shopRouter = require( "./routes/shop");
 const seeding = require( "./seeding");
-
 const app = express();
 
 mongoose.connect(
