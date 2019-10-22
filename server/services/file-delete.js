@@ -1,6 +1,5 @@
 const aws = require("aws-sdk");
-const multer = require("multer");
-const multerS3 = require("multer-s3");
+const logger = require("../utils/logger");
 
 aws.config.update({
   accessKeyId: process.env.IAM_USER_KEY,
@@ -10,28 +9,25 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-function deleteImage (keysAll) {
-    return new Promise(function (resolve, reject) {
+function deleteImage(keysAll) {
+  return new Promise(function(resolve, reject) {
     var params = {
-        Bucket: process.env.BUCKET_NAME, 
-        Delete: { 
-          Objects: [ { Key: keysAll}] // keysAll is array of objects with key: image.jpg
-        },
-      };
-    
-        s3.deleteObjects(params,function (err, data) {
-        if (err) {
-            console.log('the error  is ', err); 
-            reject(err)
-        }
-        else {
-            console.log('the delete data is ', data);  
-            resolve(data)
-        }           
-      });
-    
+      Bucket: process.env.BUCKET_NAME,
+      Delete: {
+        Objects: [keysAll] // keysAll is array of objects with capital Key: image.jpg
+      }
+    };
 
+    s3.deleteObjects(params, function(err, data) {
+      if (err) {
+        logger.info(`the error  is  ${err}`);
+        reject(err);
+      } else {
+        logger.info(`the delete data is ${data}`);
+        resolve(data);
+      }
     });
-  };
+  });
+}
 
 module.exports = deleteImage;

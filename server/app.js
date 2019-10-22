@@ -1,23 +1,23 @@
-const createError = require( "http-errors");
-const express = require( "express");
-const {json, urlencoded } = require('express');
+const createError = require("http-errors");
+const express = require("express");
+const { json, urlencoded } = require("express");
 
-const { join } = require( "path");
-const cookieParser = require( "cookie-parser");
-const logger = require( "morgan");
-const mongoose = require( "mongoose");
-
-const indexRouter = require( "./routes/index");
-const pingRouter = require( "./routes/ping");
-const authRouter = require( "./routes/auth");
-const shopRouter = require( "./routes/shop");
-const seeding = require( "./seeding");
+const { join } = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+const indexRouter = require("./routes/index");
+const pingRouter = require("./routes/ping");
+const authRouter = require("./routes/auth");
+const shopRouter = require("./routes/shop");
+const seeding = require("./seeding");
 const app = express();
+const log = require("./utils/logger");
 
 mongoose.connect(
   process.env.DB_CONNECT,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("Mongoose has connected to the database!")
+  () => log.info("Mongoose has connected to the database!")
 );
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
