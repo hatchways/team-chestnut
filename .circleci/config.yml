@@ -27,9 +27,5 @@ jobs: # a collection of steps
           command: cd server && npm test
           environment:
               DB_CONNECT: mongodb://localhost/bakeryshop
-              TOKEN_SECRET: conductor_test
-              BUCKET_NAME: bucketname
-              IAM_USER_KEY: 123abcde
-              IAM_USER_SECRET: 123abcde
-              BUCKET_REGION: eastcanada
+              ITEM_ID: 5daf182ab8af9e00dc32afab
 

@@ -11,7 +11,7 @@ describe("/POST shop/item/:itemid", () => {
     it("it should return 200", done => {
       chai
         .request(app)
-        .post(`/shop/item/5daa1254bc816877fe83e70c`)
+        .post(`/shop/item/${process.env.ITEM_ID}`)
         .set(
           "auth-token",
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGEwZGE1ZWZiZjVmYTM0OTNmODMyODMiLCJlbWFpbCI6Im5ha2thcmFwYWthQGdtYWlsLmNvbSIsIm5hbWUiOiJOYXJlc2ggQWtrYXJhcGFrYSIsImlhdCI6MTU3MTU5ODUzOX0.hE_WJIrgiG6HBnLZc1PleIj4MqlQDclwT0LxbWuWHjY"
@@ -36,7 +36,7 @@ describe("/POST shop/item/:itemid", () => {
               "https://team-chestnut.s3.amazonaws.com/157101601079",
               "https://team-chestnut.s3.amazonaws.com/cupcake.png"
             ],
-            _id: "5daa1254bc816877fe83e70c",
+            _id: `${process.env.ITEM_ID}`,
             title: "Red Velvet Cake Delicious",
             price: 70,
             description:
@@ -50,7 +50,7 @@ describe("/POST shop/item/:itemid", () => {
     it("it should return 401", done => {
       chai
         .request(app)
-        .post(`/shop/item/5daa1254bc816877fe83e70c`)
+        .post(`/shop/item/${process.env.ITEM_ID}`)
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake Delicious")
         .field(
@@ -73,7 +73,7 @@ describe("/POST shop/item/:itemid", () => {
     it("it should return 400, token invalid", done => {
       chai
         .request(app)
-        .post(`/shop/item/5daa1254bc816877fe83e70c`)
+        .post(`/shop/item/${process.env.ITEM_ID}`)
         .set(
           "auth-token",
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGEwZGE1ZWZiZjVmYTM0OTNmODMyODMiLCJlbWFpbCI6Im5ha2thcmFwYWthQGdtYWlsLmNvbSIsIm5hbWUiOiJOYXJlc2ggQWtrYXJhcGFrYSIsImlhdCI6MTU3MTU5ODUzOX0.hE_WJIrgiG6HBnLZc1PleIj4MqlQDclwT0L"
