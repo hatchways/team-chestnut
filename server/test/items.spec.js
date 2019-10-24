@@ -7,9 +7,11 @@ const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
 const fs = require("fs");
 
+
 chai.should();
 chai.use(chaiHttp);
 let userMock;
+
 
 function registerUser(name, email, password, cb) {
   chai
@@ -53,9 +55,10 @@ describe("Testing Items ", () => {
     let shopMock;
     let authToken;
     let mockItem;
-    let multerWrap;
 
     before(done => {
+     
+
       registerUser(
         "testtesttest",
         "testing@test.com",
@@ -72,6 +75,7 @@ describe("Testing Items ", () => {
     });
 
     it("Register a new items", done => {
+    
       chai
         .request(app)
         .post(`/shop/new-item/${userMock._id}`)
@@ -92,6 +96,9 @@ describe("Testing Items ", () => {
         .end((err, res) => {
           mockItem = res.body.item;
           res.should.have.status(200);
+          res.body.should.be.an('object');
+          chai.expect(res.body).to.not.be.empty;
+          res.body.should.have.property("item").to.include.all.keys('photos', '_id', 'title', 'price', 'description', '__v');;
           done();
         });
     });
@@ -116,6 +123,8 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(200);
+          res.body.should.be.an('object');
+          chai.expect(res.body).to.not.be.empty;
           res.body.should.have.property('item').eql({
             photos: [
               'https://team-chestnut.s3.amazonaws.com/testImage.png',
@@ -152,6 +161,9 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(401);
+          res.body.should.be.an('object');
+          chai.expect(res.body).to.not.be.empty;
+          res.body.should.have.property("message").eql("Access Denied");
           done();
         });
     });
@@ -176,6 +188,9 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(400);
+          res.body.should.be.an('object');
+          chai.expect(res.body).to.not.be.empty;
+          res.body.should.have.property("message").eql("Invalid Token");
           done();
         });
     });
@@ -200,9 +215,12 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(400);
+          res.body.should.be.an('object');
+          chai.expect(res.body).to.not.be.empty;
           res.body.should.have.property("message").eql("Item not found...");
           done();
         });
     });
   });
 });
+

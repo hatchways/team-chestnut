@@ -1,5 +1,5 @@
 const aws = require("aws-sdk");
-const MulterWrapper = require("../modules/multer");
+const multer = require("multer");
 const multerS3 = require("multer-s3");
 
 aws.config.update({
@@ -16,7 +16,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 // Experiencing an error when trying to allow public read access (suggested fixes didn't work)
-const upload = MulterWrapper.multer({
+const upload = multer({
   fileFilter,
   storage: multerS3({
     s3,
