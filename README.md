@@ -1,5 +1,12 @@
-# EXPRESS-STARTER
+# Bakery Shop
 
+A platform that allows bakers to sell custom cakes (cookies, cupcakes. etc.) for events (wedding, birthday parties, etc.)! There is a movement toward customization and this website is to allow people to request and shop for their dream cake.
+
+Scope of Project:
+	• Create a platform for bakers to create personal shops to upload their designs (cakes, cupcakes, cookies, etc.)
+	• Payments - Shoppers can come on the platform and shop for baking goods or request a custom design by a baker they like
+	• Filter feed to shop - filter by type of bake goods, price
+    Messenger for bakers and shoppers to discuss customized orders
 
 # MangoDb
 To Run MongoDb in mac with mongoose, follow three steps
@@ -80,3 +87,6 @@ In order to use ESLint and Prettier efficiently in Visual Studio Code install to
     ESLint - Visual Studio Marketplace
     Prettier - Code formatter - Visual Studio Marketplace
 Auto format javascript documents by pressing cmd + shift  + P and click Format Document
+
+# Server logger
+The server user Winston logger for logging. The logs will be in the utils/logs. 

@@ -66,7 +66,7 @@ export default function seeding() {
 
       const savedUser = await newuser.save();
 
-      console.log("sved user", savedUser);
+      console.log("saved user", savedUser);
 
       const shop = new shops({
         user: savedUser._id,
