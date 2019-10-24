@@ -28,4 +28,5 @@ jobs: # a collection of steps
           environment:
               DB_CONNECT: mongodb://localhost/bakeryshop
               ITEM_ID: 5daf182ab8af9e00dc32afab
+              TEST_DB: mongodb://localhost/bakerytestdb
 
