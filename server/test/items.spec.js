@@ -1,17 +1,23 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const app = require("../app.js");
+const sinon = require("sinon");
+const multer = require("multer");
+
+const MulterWrapper = require("../modules/multer");
+sinon
+  .stub(MulterWrapper, "multer")
+  .returns(multer({ storage: multer.memoryStorage() }));
+
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
 const fs = require("fs");
 
-
+const app = require("../app.js");
 chai.should();
 chai.use(chaiHttp);
 let userMock;
-
 
 function registerUser(name, email, password, cb) {
   chai
@@ -57,8 +63,6 @@ describe("Testing Items ", () => {
     let mockItem;
 
     before(done => {
-     
-
       registerUser(
         "testtesttest",
         "testing@test.com",
@@ -74,8 +78,12 @@ describe("Testing Items ", () => {
       );
     });
 
+    after(done => {
+      // AWSMock.restore('S3');
+      MulterWrapper.multer.restore();
+      done();
+    });
     it("Register a new items", done => {
-    
       chai
         .request(app)
         .post(`/shop/new-item/${userMock._id}`)
@@ -96,9 +104,19 @@ describe("Testing Items ", () => {
         .end((err, res) => {
           mockItem = res.body.item;
           res.should.have.status(200);
-          res.body.should.be.an('object');
+          res.body.should.be.an("object");
           chai.expect(res.body).to.not.be.empty;
-          res.body.should.have.property("item").to.include.all.keys('photos', '_id', 'title', 'price', 'description', '__v');;
+          res.body.should.have
+            .property("item")
+            .to.include.all.keys(
+              "photos",
+              "_id",
+              "title",
+              "price",
+              "description",
+              "__v"
+            );
+
           done();
         });
     });
@@ -114,8 +132,8 @@ describe("Testing Items ", () => {
           "description",
           "it is one of the best seller at our bakery. Not only does it look good, it also tastes great. You will never go wrong with this red velvet cake. Let us know if you need any specific modification to the cake done."
         )
-        .field("price", 70)
-        .field("category", "cake")
+        .field("price", 20)
+        .field("category", "bakery")
         .attach(
           "image",
           fs.readFileSync(__dirname + "/cupcake.png"),
@@ -123,20 +141,16 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(200);
-          res.body.should.be.an('object');
+          res.body.should.be.an("object");
           chai.expect(res.body).to.not.be.empty;
-          res.body.should.have.property('item').eql({
-            photos: [
-              'https://team-chestnut.s3.amazonaws.com/testImage.png',
-              'https://team-chestnut.s3.amazonaws.com/cupcake.png'
-            ],
+          res.body.should.have.property("item").eql({
+            photos: [null],
             _id: mockItem._id,
-            title: 'Red Velvet Cake',
-            price: 70,
-            description: 'it is one of the best seller at our bakery. Not only does it look good, it also tastes great. You will never go wrong with this red velvet cake. Let us know if you need any specific modification to the cake done.',
-            category: 'cake',
-            __v: 1
-          
+            title: "Red Velvet Cake",
+            price: 20,
+            description:
+              "it is one of the best seller at our bakery. Not only does it look good, it also tastes great. You will never go wrong with this red velvet cake. Let us know if you need any specific modification to the cake done.",
+            category: "bakery"
           });
           done();
         });
@@ -161,7 +175,7 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(401);
-          res.body.should.be.an('object');
+          res.body.should.be.an("object");
           chai.expect(res.body).to.not.be.empty;
           res.body.should.have.property("message").eql("Access Denied");
           done();
@@ -188,7 +202,7 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(400);
-          res.body.should.be.an('object');
+          res.body.should.be.an("object");
           chai.expect(res.body).to.not.be.empty;
           res.body.should.have.property("message").eql("Invalid Token");
           done();
@@ -215,12 +229,11 @@ describe("Testing Items ", () => {
         )
         .end(function(err, res) {
           res.should.have.status(400);
-          res.body.should.be.an('object');
+          res.body.should.be.an("object");
           chai.expect(res.body).to.not.be.empty;
           res.body.should.have.property("message").eql("Item not found...");
           done();
         });
     });
   });
-});
-
+})

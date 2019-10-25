@@ -104,11 +104,9 @@ router.post(
       }
     );
     if (!shop) {
-      return res
-        .status(400)
-        .send({
-          message: "Not authorized to add item, please register a shop"
-        });
+      return res.status(400).send({
+        message: "Not authorized to add item, please register a shop"
+      });
     }
 
     logger.log("info", "The shop details is", shop.toJSON());
