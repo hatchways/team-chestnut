@@ -2,22 +2,24 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 const sinon = require("sinon");
 const multer = require("multer");
-
 const MulterWrapper = require("../modules/multer");
-sinon
-  .stub(MulterWrapper, "multer")
-  .returns(multer({ storage: multer.memoryStorage() }));
-
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
 const fs = require("fs");
+// sinon has to stub the middleware before the app is created. Otherwise it not stub the middleware.
+sinon
+  .stub(MulterWrapper, "multer")
+  .returns(multer({ storage: multer.memoryStorage() }));
 
 const app = require("../app.js");
+
 chai.should();
-chai.use(chaiHttp);
+chai.use(chaiHttp);;
 let userMock;
+
+
 
 function registerUser(name, email, password, cb) {
   chai
