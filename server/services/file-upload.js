@@ -1,6 +1,7 @@
 const aws = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+const MulterWrapper = require('../modules/multer.js')
 
 aws.config.update({
   accessKeyId: process.env.IAM_USER_KEY,
@@ -15,8 +16,8 @@ const fileFilter = (req, file, cb) => {
     cb(new Error("Invalid Mime Type, only JPEG and PNG"), false);
   }
 };
-// Experiencing an error when trying to allow public read access (suggested fixes didn't work)
-const upload = multer({
+
+const upload = MulterWrapper.multer({
   fileFilter,
   storage: multerS3({
     s3,
@@ -29,6 +30,7 @@ const upload = multer({
       cb(null, file.originalname);
     }
   })
-});
+})
+
 
 module.exports = { upload };
