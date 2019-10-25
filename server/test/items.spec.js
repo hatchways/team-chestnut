@@ -16,10 +16,8 @@ sinon
 const app = require("../app.js");
 
 chai.should();
-chai.use(chaiHttp);;
+chai.use(chaiHttp);
 let userMock;
-
-
 
 function registerUser(name, email, password, cb) {
   chai
@@ -81,7 +79,6 @@ describe("Testing Items ", () => {
     });
 
     after(done => {
-      // AWSMock.restore('S3');
       MulterWrapper.multer.restore();
       done();
     });
@@ -238,4 +235,4 @@ describe("Testing Items ", () => {
         });
     });
   });
-})
+});
