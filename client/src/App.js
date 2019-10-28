@@ -2,9 +2,9 @@ import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { theme } from "./themes/theme";
-import LandingPage from "./pages/Landing";
 import Navbar from "./components/navbar/navbar";
 import SignAll from "./pages/SignAll";
+import AllProducts from './pages/AllProducts'
 import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
@@ -18,9 +18,10 @@ function App() {
         <Navbar />
         <BrowserRouter>
           <Switch>
-            <Route exact path="/" component={LandingPage} />
+            <Route exact path="/" component={AllProducts} />
             <Route exact path="/signin" component={SignAll} />
             <Route exact path="/signup" component={SignAll} />
+            <Route exact path="/products" component={AllProducts} />
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
           </Switch>
