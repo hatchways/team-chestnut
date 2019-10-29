@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,11 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import jwt from "jsonwebtoken";
 
 const useStyles = makeStyles(theme => ({
@@ -86,10 +91,10 @@ const dataFetchReducer = (state, action) => {
         ...state,
         isLoading: false,
         error: null,
-        isMyShop: action.payload.user === action.user,
+        isMyShop: action.payload.user._id === action.user,
         shopData: {
-          ...action.payload,
-          items: action.payload.items.map(product => {
+          ...action.payload.shop,
+          items: action.payload.shop.items.map(product => {
             return { ...product, isLiked: false };
           })
         }
@@ -116,7 +121,7 @@ const dataFetchReducer = (state, action) => {
         }
       };
     default:
-      console.log("default case");
+      return null;
   }
 };
 
@@ -136,6 +141,7 @@ export default function Shop() {
     error: null,
     isLoading: false
   });
+  const [editDetailsOpen, setEditDetailsOpen] = useState(false);
 
   // fetch shop data
   const token = localStorage.getItem("token");
@@ -151,7 +157,7 @@ export default function Shop() {
         });
         dispatch({
           type: "FETCH_SUCCESS",
-          payload: result.data.shop,
+          payload: result.data,
           user: userid
         });
       } catch (err) {
@@ -159,7 +165,7 @@ export default function Shop() {
       }
     }
     dispatch({ type: "FETCH_INIT" });
-   
+
     fetchShop();
   }, []);
   if (shop.isLoading) {
@@ -188,8 +194,15 @@ export default function Shop() {
               fullWidth
               variant="contained"
               className={classes.contactOwner}
+              onClick={
+                shop.isMyShop
+                  ? () => setEditDetailsOpen(true)
+                  : () => {
+                      return null;
+                    }
+              }
             >
-              Contact Owner
+              {shop.isMyShop ? "Edit Shop Details" : "Contact Owner"}
             </Button>
           </div>
         </Grid>
@@ -209,6 +222,41 @@ export default function Shop() {
           </Button>
         </Grid>
       </Grid>
+      <Dialog
+        open={editDetailsOpen}
+        onClose={() => setEditDetailsOpen(false)}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Edit Shop Details</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Shop Name"
+            fullWidth
+            defaultValue={shop.shopData.title}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="standard-multiline-flexible"
+            label="Shop Description"
+            fullWidth
+            defaultValue={shop.shopData.description}
+            multiline
+            rowsMax="4"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDetailsOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => setEditDetailsOpen(false)} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {shop.shopData.items.map((product, index) => (
