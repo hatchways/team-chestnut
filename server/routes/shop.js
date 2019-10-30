@@ -141,7 +141,32 @@ router.post(
       .send({ item: newItem });
   }
 );
-
+router.put("/details-update/:userid", verify, async (req, res) => {
+  console.log(req);
+  const userid = req.params.userid;
+  const token = req.header("auth-token");
+  const updateFields = {
+    title: req.body.title,
+    description: req.body.description
+  };
+  const shop = await Shop.updateOne(
+    { user: userid },
+    { $set: updateFields }
+  ).catch(error => {
+    logger.error(
+      `database error in put request to edit shop details: ${error}`
+    );
+  });
+  if (!shop) {
+    return res.status(400).send({
+      message: "Not authorized to add item, please register a shop"
+    });
+  }
+  return res
+    .header("auth-token", token)
+    .status(200)
+    .send(shop);
+});
 router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");

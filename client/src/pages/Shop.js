@@ -142,6 +142,8 @@ export default function Shop() {
     isLoading: false
   });
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
+  const [shopDescription, setShopDescription] = useState("");
+  const [shopTitle, setShopTitle] = useState("");
 
   // fetch shop data
   const token = localStorage.getItem("token");
@@ -168,15 +170,40 @@ export default function Shop() {
 
     fetchShop();
   }, []);
+  const UPDATE_DETAILS_API = "http://localhost:3001/shop/details-update/";
+  async function updateDetails() {
+    try {
+      const updateStatus = await axios.put(`${UPDATE_DETAILS_API}${userid}`, {
+        headers: { "auth-token": token },
+        body: { title: shopTitle, description: shopDescription }
+      });
+      console.log(updateStatus);
+      return updateStatus;
+    } catch (err) {
+      return err;
+    }
+  }
   if (shop.isLoading) {
     return <div>Loading...</div>;
   }
   if (shop.error !== null) {
     return <div>{shop.error}</div>;
   }
+  const handleChange = type => event => {
+    if (type === "title") {
+      // setTitleError(false);
+      setShopTitle(event.target.value);
+    }
+    if (type === "description") {
+      // setDescriptionError(false);
+      setShopDescription(event.target.value);
+    }
+  };
+  const saveDetails = () => {
+    updateDetails();
+    setEditDetailsOpen(false);
+  };
   // because our seed data is repetitive I had to use map index in the key
-  // to avoid error being thrown
-  // Could also probably restructure this code with more functions
   return (
     <>
       <Grid container component="main">
@@ -234,6 +261,8 @@ export default function Shop() {
             margin="dense"
             id="name"
             label="Shop Name"
+            type="title"
+            onChange={handleChange("title")}
             fullWidth
             defaultValue={shop.shopData.title}
           />
@@ -242,6 +271,8 @@ export default function Shop() {
             margin="dense"
             id="standard-multiline-flexible"
             label="Shop Description"
+            type="description"
+            onChange={handleChange("description")}
             fullWidth
             defaultValue={shop.shopData.description}
             multiline
@@ -252,7 +283,7 @@ export default function Shop() {
           <Button onClick={() => setEditDetailsOpen(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => setEditDetailsOpen(false)} color="primary">
+          <Button onClick={() => saveDetails()} color="primary">
             Save
           </Button>
         </DialogActions>
