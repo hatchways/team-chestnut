@@ -6,8 +6,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import jwt from "jsonwebtoken";
 import ShopBanner from "../components/shop/ShopBanner";
 import ProductCard from "../components/shop/ProductCard";
-import DetailsDialog from "../components/shop/DetailsDialog";
+import EditDetailsDialog from "../components/shop/EditDetailsDialog";
 import shopReducer from "../components/shop/shopReducer";
+import EditCoverDialog from "../components/shop/EditCoverDialog";
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -32,7 +33,8 @@ export default function Shop() {
     isLoading: false,
     shopDescriptionInput: "",
     shopTitleInput: "",
-    editDetailsDialogOpen: false
+    editDetailsDialogIsOpen: false,
+    editCoverDialogIsOpen: false
   });
   // fetch shop data
   const token = localStorage.getItem("token");
@@ -104,6 +106,9 @@ export default function Shop() {
   const saveDetails = () => {
     updateDetails();
   };
+  const saveCover = () => {
+    return null;
+  };
   // because our seed data is not unique I had to use map index in the key
   return (
     <>
@@ -112,13 +117,18 @@ export default function Shop() {
         setDetailsDialogOpen={() =>
           dispatch({ type: "OPEN_EDIT_DETAILS_DIALOG" })
         }
+        setCoverDialogOpen={() => dispatch({ type: "OPEN_EDIT_COVER_DIALOG" })}
       />
-      <DetailsDialog
+      <EditDetailsDialog
         saveDetails={saveDetails}
         closeDialog={() => dispatch({ type: "CLOSE_EDIT_DETAILS_DIALOG" })}
-        dialogOpenStatus={shop.editDetailsDialogOpen}
         handleChange={handleChange}
         shop={shop}
+      />
+      <EditCoverDialog
+        saveCover={saveCover}
+        closeDialog={() => dispatch({ type: "CLOSE_EDIT_COVER_DIALOG" })}
+        dialogOpenStatus={shop.editCoverDialogIsOpen}
       />
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>

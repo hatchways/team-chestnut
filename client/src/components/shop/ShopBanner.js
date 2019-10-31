@@ -42,7 +42,7 @@ export default function ShopBanner(props) {
             className={classes.contactOwner}
             onClick={
               props.shop.isMyShop
-                ? () => props.setDetailsDialogOpen(true)
+                ? () => props.setDetailsDialogOpen()
                 : () => {
                     return null;
                   }
@@ -62,7 +62,16 @@ export default function ShopBanner(props) {
       >
         <Button
           className={classes.editCoverBtn}
-          style={props.shop.isMyShop ? { display: "intial" } : { display: "none" }}
+          style={
+            props.shop.isMyShop ? { display: "intial" } : { display: "none" }
+          }
+          onClick={
+            props.shop.isMyShop
+              ? () => props.setCoverDialogOpen()
+              : () => {
+                  return null;
+                }
+          }
         >
           Edit Cover
         </Button>

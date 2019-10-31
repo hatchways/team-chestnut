@@ -50,7 +50,7 @@ export default function shopReducer(state, action) {
           title: action.data.title,
           description: action.data.description
         },
-        editDetailsDialogOpen: false
+        editDetailsDialogIsOpen: false
       };
     case "SHOP_DETAILS_UPDATE_ERROR":
       return {
@@ -70,12 +70,22 @@ export default function shopReducer(state, action) {
     case "OPEN_EDIT_DETAILS_DIALOG":
       return {
         ...state,
-        editDetailsDialogOpen: true
+        editDetailsDialogIsOpen: true
       };
     case "CLOSE_EDIT_DETAILS_DIALOG":
       return {
         ...state,
-        editDetailsDialogOpen: false
+        editDetailsDialogIsOpen: false
+      };
+    case "OPEN_EDIT_COVER_DIALOG":
+      return {
+        ...state,
+        editCoverDialogIsOpen: true
+      };
+    case "CLOSE_EDIT_COVER_DIALOG":
+      return {
+        ...state,
+        editCoverDialogIsOpen: false
       };
     default:
       return null;

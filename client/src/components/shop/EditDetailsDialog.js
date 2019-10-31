@@ -9,7 +9,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 export default function DetailsDialog(props) {
   return (
     <Dialog
-      open={props.dialogOpenStatus}
+      open={props.shop.editDetailsDialogIsOpen}
       onClose={() => props.closeDialog()}
       aria-labelledby="form-dialog-title"
     >
