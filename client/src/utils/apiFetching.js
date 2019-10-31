@@ -20,7 +20,6 @@ export const fetchPost = (endpoint,body, headers = {Accept: "application/json","
       const urlParams =  '?' + new URLSearchParams(Object.entries(params));
       endpoint = endpoint + urlParams
     }
-    
    return  fetch(endpoint,{
       method: "GET",
       headers,

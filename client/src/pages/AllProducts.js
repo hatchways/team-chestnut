@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2)
   },
   heroContent: {
-    padding: theme.spacing(5, 0, 6)
+    padding: theme.spacing(5, 0, 0)
   },
   heroButtons: {
     marginTop: theme.spacing(4)
@@ -30,15 +30,22 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column"
   },
   cardMedia: {
-    paddingTop: "56.25%" // 16:9
+    paddingTop: "75%"
   },
   cardContent: {
     flexGrow: 1
   },
-  filter: {
-    position: "sticky",
-    top: 20
+  [theme.breakpoints.between('sm', 'lg')]: {
+    sticky:{
+      position: 'sticky',
+      top: '20px'
+    }
+  },
+  fontweight:{
+    fontWeight: 500
   }
+  
+  
 }));
 
 export default function Album() {
@@ -66,12 +73,10 @@ export default function Album() {
           priceMax: filters.priceMax
         };
       }
-
       fetchGet("http://localhost:3001/shop/items", params).then((res, err) => {
         if (res !== 'Failed to fetch') {
           setShopItems(res);
         }
-        console.log(res)
       });
     }
   }, [filters]);
@@ -80,15 +85,15 @@ export default function Album() {
     <React.Fragment>
       <CssBaseline />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="xl">
             <Typography
-              component="h1"
-              variant="h2"
+              component="h2"
+              variant="h3"
               align="left"
               color="textPrimary"
               gutterBottom
+              className={classes.fontweight}
             >
               Discover Baking Goods
             </Typography>
@@ -96,22 +101,22 @@ export default function Album() {
         </div>
         <div>
           <Grid container className={classes.heroContent}>
-            <Grid item xs={3} className={classes.filter}>
-              <Container maxWidth="xl" spacing={1}>
+            <Grid item xs={12} sm={3}>
+              <Container maxWidth="xl" spacing={1} className={classes.sticky}>
                 <Typography
-                  component="h4"
-                  variant="h5"
+                  component="h5"
+                  variant="h6"
                   align="left"
                   color="textPrimary"
                   gutterBottom
+                  className={classes.fontweight}
                 >
                   FILTERS
                 </Typography>
-
                 <FilteredList callBack={callbackFunction}></FilteredList>
               </Container>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={12} sm={9}>
               <Container className={classes.cardGrid} maxWidth="lg">
                 <Grid container spacing={3}>
                   {shopItems.map((card, i) => (

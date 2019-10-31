@@ -22,163 +22,151 @@ const useStyles = makeStyles(theme => ({
 
 export default function FilteredList(props) {
   const classes = useStyles();
-  const [open, setOpen] = useState(true);
-  const [openPrice, setOpenPrice] = useState(false);
-  const [allProducts, setAllProducts] = useState(true);
-  const [cakes, setCakes] = useState(false);
-  const [cookies, setCookies] = useState(false);
-  const [cupcakes, setCupcakes] = useState(false);
-  const [macarons, setMacarons] = useState(false);
-  const [allPrices, setAllPrices] = useState(true);
-  const [lessTen, setLessTen] = useState(false);
-  const [tenTwenty, setTenTwenty] = useState(false);
-  const [fourty, setFourty] = useState(false);
-  const [fourtyMore, setFourtyMore] = useState(false);
-  const [dataChanged, setDataChanged] = useState(0);
+  const [open, setOpen] = useState({
+    product: true,
+    price: false
+  });
 
-  const handleClick = type => {
-    if (type === "product") {
-      setOpen(!open);
-    }
-    if (type === "price") {
-      setOpenPrice(!openPrice);
-    }
-  };
+  const [products, setProducts] = useState({
+    all: true,
+    cakes: false,
+    cookies: false,
+    cupcakes: false,
+    macarons: false
+  });
+
+  const [pricing, setPricing] = useState({
+    all: true,
+    lessTen: false,
+    tenTwenty: false,
+    fourty: false,
+    fourtyMore: false
+  });
 
   const productTypes = [
-    { label: "All", value: "All", checked: allProducts, set: setAllProducts },
-    { label: "Cakes", value: "Cakes", checked: cakes, set: setCakes },
-    { label: "Cookies", value: "Cookies", checked: cookies, set: setCookies },
-    {
-      label: "Cupcakes",
-      value: "Cupcakes",
-      checked: cupcakes,
-      set: setCupcakes
-    },
-    {
-      label: "Macarons",
-      value: "Macarons",
-      checked: macarons,
-      set: setMacarons
-    }
+    { label: "All", value: "all", checked: products.all },
+    { label: "Cakes", value: "cakes", checked: products.cakes },
+    { label: "Cookies", value: "cookies", checked: products.cookies },
+    { label: "Cupcakes", value: "cupcakes", checked: products.cupcakes },
+    { label: "Macarons", value: "macarons", checked: products.macarons }
   ];
 
   const priceTypes = [
     {
       label: "All",
-      value: "All",
-      checked: allPrices,
-      set: setAllPrices,
+      value: "all",
       min: 0,
-      max: Number.MAX_SAFE_INTEGER
+      max: Number.MAX_SAFE_INTEGER,
+      checked: pricing.all
     },
     {
       label: "Less than $10",
-      value: "<10",
-      checked: lessTen,
-      set: setLessTen,
+      value: "lessTen",
       max: 10,
-      min: 0
+      min: 0,
+      checked: pricing.lessTen
     },
     {
       label: "$10-$20",
-      value: "10-20",
-      checked: tenTwenty,
-      set: setTenTwenty,
+      value: "tenTwenty",
       min: 10,
-      max: 20
+      max: 20,
+      checked: pricing.tenTwenty
     },
     {
       label: "$20-$40",
-      value: "20-40",
-      checked: fourty,
-      set: setFourty,
+      value: "fourty",
       min: 20,
-      max: 40
+      max: 40,
+      checked: pricing.fourty
     },
     {
       label: "$40 and more",
-      value: "40>",
-      checked: fourtyMore,
-      set: setFourtyMore,
+      value: "fourtyMore",
       min: 40,
-      max: Number.MAX_SAFE_INTEGER
+      max: Number.MAX_SAFE_INTEGER,
+      checked: pricing.fourtyMore
     }
   ];
 
+  const handleClick = type => {
+    setOpen({ ...open, [type]: !open[type] });
+  };
+
   function filterProducts(event, index, type) {
     if (type === "product") {
-      if (productTypes[index].value === "All" && event === true) {
-        setAllProducts(true);
-        setCakes(false);
-        setCookies(false);
-        setCupcakes(false);
-        setMacarons(false);
+      if (productTypes[index].value === "all" && event === true) {
+        setProducts({
+          all: true,
+          cakes: false,
+          cookies: false,
+          cupcakes: false,
+          macarons: false
+        });
       } else {
-        setAllProducts(false);
-        productTypes[index].set(event);
+        setProducts({
+          ...products,
+          all: false,
+          [productTypes[index].value]: event
+        });
       }
     }
 
     if (type === "price") {
-      if (priceTypes[index].value === "All" && event === true) {
-        setAllPrices(true);
-        setLessTen(false);
-        setTenTwenty(false);
-        setFourty(false);
-        setFourtyMore(false);
-      } else if (priceTypes[index].value === "40>" && event === true) {
-        setAllPrices(false);
-        setLessTen(false);
-        setTenTwenty(false);
-        setFourty(false);
-        priceTypes[index].set(event);
+      if (priceTypes[index].value === "all" && event === true) {
+        setPricing({
+          all: true,
+          lessTen: false,
+          tenTwenty: false,
+          fourty: false,
+          fourtyMore: false
+        });
       } else {
-        setAllPrices(false);
-        setFourtyMore(false);
-        priceTypes[index].set(event);
+        setPricing({
+          ...pricing,
+          all: false,
+          [priceTypes[index].value]: event
+        });
       }
     }
-    setDataChanged(dataChanged + index + 1);
   }
 
   useEffect(() => {
-    let data = { category: [], priceMin: 0, priceMax: 0 };
+    let parameters = { category: [], priceMin: 0, priceMax: 0 };
     let zeroRecorded = false;
     priceTypes.forEach(pro => {
       if (pro.checked === true) {
         if (pro.min === 0) {
           zeroRecorded = true;
-          data.priceMin = pro.min;
+          parameters.priceMin = pro.min;
         } else if (
-          pro.min > data.priceMin &&
+          pro.min > parameters.priceMin &&
           zeroRecorded === false &&
-          pro.min !== data.priceMax
+          pro.min !== parameters.priceMax
         ) {
-          data.priceMin = pro.min;
+          parameters.priceMin = pro.min;
         }
-        if (pro.max > data.priceMax) {
-          data.priceMax = pro.max;
+        if (pro.max > parameters.priceMax) {
+          parameters.priceMax = pro.max;
         }
       }
     });
 
     productTypes.forEach(pro => {
       if (pro.checked === true) {
-        data.category.push(pro.value);
+        parameters.category.push(pro.label);
       }
     });
 
-    if (data.category.length === 0) {
-      setAllProducts(true);
-      data.category.push("All");
-    } else if (data.priceMax === 0) {
-      setAllPrices(true);
-      data.priceMax = Number.MAX_SAFE_INTEGER;
+    if (parameters.category.length === 0) {
+      setProducts({ ...products, all: true });
+      parameters.category.push("All");
+    } else if (parameters.priceMax === 0) {
+      setPricing({ ...pricing, all: true });
+      parameters.priceMax = Number.MAX_SAFE_INTEGER;
     }
-
-    props.callBack(data);
-  }, [dataChanged]);
+    props.callBack(parameters);
+  }, [pricing, products]);
 
   return (
     <List
@@ -193,15 +181,16 @@ export default function FilteredList(props) {
         }}
       >
         <ListItemText primary="PRODUCT TYPE" />
-        {open ? <ExpandLess /> : <ExpandMore />}
+        {open.product ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
+      <Collapse in={open.product} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {productTypes.map((productType, i) => (
             <ListItem className={classes.nested} key={productType.label}>
               <FormControlLabel
                 control={
                   <Checkbox
+                    color="primary"
                     checked={productType.checked}
                     onChange={event =>
                       filterProducts(event.target.checked, i, "product")
@@ -222,15 +211,16 @@ export default function FilteredList(props) {
         }}
       >
         <ListItemText primary="PRICE" />
-        {openPrice ? <ExpandLess /> : <ExpandMore />}
+        {open.price ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={openPrice} timeout="auto" unmountOnExit>
+      <Collapse in={open.price} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {priceTypes.map((priceType, i) => (
             <ListItem className={classes.nested} key={priceType.label}>
               <FormControlLabel
                 control={
                   <Checkbox
+                    color="primary"
                     checked={priceType.checked}
                     onChange={event =>
                       filterProducts(event.target.checked, i, "price")
