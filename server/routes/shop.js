@@ -142,7 +142,6 @@ router.post(
   }
 );
 router.put("/details-update/:userid", verify, async (req, res) => {
-  console.log(req);
   const userid = req.params.userid;
   const token = req.header("auth-token");
   const updateFields = {
