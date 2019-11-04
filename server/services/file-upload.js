@@ -1,7 +1,6 @@
 const aws = require("aws-sdk");
-const multer = require("multer");
 const multerS3 = require("multer-s3");
-const MulterWrapper = require('../modules/multer.js')
+const MulterWrapper = require('../modules/multer')
 
 aws.config.update({
   accessKeyId: process.env.IAM_USER_KEY,

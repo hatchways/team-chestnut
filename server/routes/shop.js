@@ -38,18 +38,6 @@ router.post(
   }
 );
 
-router.post("/image-upload", verify, function(req, res) {
-  singleUpload(req, res, function(err) {
-    if (err) {
-      res.status(422).send({
-        errors: [{ title: "File Upload Error", details: err.message }]
-      });
-    }
-
-    return res.json({ imageUrl: req.file.location });
-  });
-});
-
 router.post("/item/:itemid", multipleUpload, verify, async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");
@@ -141,7 +129,31 @@ router.post(
       .send({ item: newItem });
   }
 );
-
+router.put("/details/:userid", verify, async (req, res) => {
+  const userid = req.params.userid;
+  const token = req.header("auth-token");
+  const updateFields = {
+    title: req.body.title,
+    description: req.body.description
+  };
+  const shop = await Shop.updateOne(
+    { user: userid },
+    { $set: updateFields }
+  ).catch(error => {
+    logger.error(
+      `database error in put request to edit shop details: ${error}`
+    );
+  });
+  if (!shop) {
+    return res.status(400).send({
+      message: "Not authorized to update shop details, please login or register a shop"
+    });
+  }
+  return res
+    .header("auth-token", token)
+    .status(200)
+    .send(shop);
+});
 router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");
@@ -183,7 +195,50 @@ router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
       logger.error(`the multer delete error is ${err}`);
     });
 });
-
+router.put("/cover/:userid", verify, singleUpload, async (req, res) => {
+  const userid = req.params.userid
+  const shop = await Shop.findOne({ user: userid }, { __v: false }).catch(
+    error => {
+      logger.error(`the database error in getting the shop ${error}`);
+      return res.status(400).send({message: "Not authorized to access shop, please login or register a shop"})
+    }
+  );
+  if (!shop) {
+    return res.status(400).send({
+      message: "Not authorized to access shop, please login or register a shop"
+    });
+  }
+  const oldCoverPhoto = shop.cover_photo
+  const updateFields = {
+    cover_photo: req.file.location,
+  };
+  const coverUpdate = await Shop.updateOne(
+    { user: userid },
+    { $set: updateFields }
+  ).catch(error => {
+    logger.error(
+      `database error in put request to edit shop details: ${error}`
+    );
+    return res.status(400).send({message: "Not authorized to access update database with new upload"})
+  });
+  const Key = oldCoverPhoto.split("/").slice(-1)[0];
+  const imageDeleted = deleteImage({ Key: Key });
+  imageDeleted
+    .then((data, rej) => {
+      if (data.Deleted[0].Key === Key) {
+        return res.status(200).send({message: "Cover photo successfully uploaded and previous photo deleted."})
+      } else if (rej) {
+        return res
+          .status(400)
+          .send({ message: "There was an error trying to delete the image" });
+      } else {
+        return res.status(400).send({ message: "Image could not be deleted" });
+      }
+    })
+    .catch(err => {
+      logger.error(`the multer delete error is ${err}`);
+    });
+})
 router.get("/items", async function(req, res) {
 
   const category = req.query.category ? JSON.parse(req.query.category) : null;
