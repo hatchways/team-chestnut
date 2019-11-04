@@ -34,12 +34,13 @@ export default function Shop() {
     shopDescriptionInput: "",
     shopTitleInput: "",
     editDetailsDialogIsOpen: false,
-    editCoverDialogIsOpen: false
+    editCoverDialogIsOpen: false,
+    coverImageChanged: false
   });
   // fetch shop data
   const token = localStorage.getItem("token");
 
-  const USER_API = "http://localhost:3001/users/";
+  const USER_API = "/users/";
   // user id will be from userContext in the future
   const decoded = jwt.decode(token, { complete: true });
   const userid = decoded.payload._id;
@@ -61,8 +62,8 @@ export default function Shop() {
     dispatch({ type: "FETCH_INIT" });
 
     fetchShop();
-  }, []);
-  const UPDATE_DETAILS_API = "http://localhost:3001/shop/details-update/";
+  }, [shop.coverImageChanged]);
+  const UPDATE_DETAILS_API = "/shop/details/";
   async function updateDetails() {
     const config = {
       headers: { "auth-token": token }
@@ -72,7 +73,6 @@ export default function Shop() {
       description: shop.shopDescriptionInput
     };
     try {
-      // Is it necessary to store the result value of the request in state?
       const updateStatus = await axios.put(
         `${UPDATE_DETAILS_API}${userid}`,
         data,
@@ -86,6 +86,24 @@ export default function Shop() {
       dispatch({ type: "SHOP_DETAILS_UPDATE_ERROR", error: err });
     }
   }
+  const UPDATE_COVER_API = "/shop/cover/";
+  const updateCover = async image => {
+    const config = {
+      headers: { "auth-token": token }
+    };
+    const bodyFormData = new FormData();
+    bodyFormData.append("image", image);
+    try {
+      const updateStatus = await axios.put(
+        `${UPDATE_COVER_API}${userid}`,
+        bodyFormData,
+        config
+      );
+      dispatch({ type: "COVER_IMAGE_CHANGED" });
+    } catch (err) {
+      return err;
+    }
+  };
   if (shop.isLoading) {
     return <div>Loading...</div>;
   }
@@ -106,8 +124,8 @@ export default function Shop() {
   const saveDetails = () => {
     updateDetails();
   };
-  const saveCover = () => {
-    return null;
+  const saveCover = image => {
+    updateCover(image);
   };
   // because our seed data is not unique I had to use map index in the key
   return (

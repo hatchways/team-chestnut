@@ -1,30 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { useDropzone } from "react-dropzone";
-
-function CoverDropzone() {
-  const onDrop = useCallback(acceptedFiles => {
-    // Do something with the files
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
-  return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <p>Drop the files here ...</p>
-      ) : (
-        <p>Drag and drop some files here, or click to select files</p>
-      )}
-    </div>
-  );
-}
+import Dropzone from "./Dropzone";
 
 export default function EditCoverDialog(props) {
+  const [image, setImage] = useState("");
   return (
     <Dialog
       open={props.dialogOpenStatus}
@@ -32,12 +15,14 @@ export default function EditCoverDialog(props) {
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">Edit Cover Photo</DialogTitle>
-      <DialogContent>{CoverDropzone()}</DialogContent>
+      <DialogContent>
+        <Dropzone setImage={setImage} />
+      </DialogContent>
       <DialogActions>
         <Button onClick={() => props.closeDialog()} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => props.saveCover()} color="primary">
+        <Button onClick={() => props.saveCover(image)} color="primary">
           Save
         </Button>
       </DialogActions>

@@ -129,7 +129,7 @@ router.post(
       .send({ item: newItem });
   }
 );
-router.put("/details-update/:userid", verify, async (req, res) => {
+router.put("/details/:userid", verify, async (req, res) => {
   const userid = req.params.userid;
   const token = req.header("auth-token");
   const updateFields = {
@@ -196,7 +196,7 @@ router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
     });
 });
 
-router.put("/cover-update/:userid", verify, singleUpload, async (req, res) => {
+router.put("/cover/:userid", verify, singleUpload, async (req, res) => {
   const userid = req.params.userid
   const shop = await Shop.findOne({ user: userid }, { __v: false }).catch(
     error => {
@@ -222,7 +222,6 @@ router.put("/cover-update/:userid", verify, singleUpload, async (req, res) => {
     );
     return res.status(400).send({message: "Not authorized to access update database with new upload"})
   });
-  console.log(coverUpdate);
   const Key = oldCoverPhoto.split("/").slice(-1)[0];
   const imageDeleted = deleteImage({ Key: Key });
   imageDeleted
