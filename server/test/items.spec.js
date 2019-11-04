@@ -8,7 +8,8 @@ const mongoose = require("mongoose");
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
 const fs = require("fs");
-// sinon has to stub the middleware before the app is created. Otherwise it not stub the middleware.
+
+// sinon has to stub the middleware before the app is created. Otherwise it will not stub the middleware.
 sinon
   .stub(MulterWrapper, "multer")
   .returns(multer({ storage: multer.memoryStorage() }));

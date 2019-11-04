@@ -195,7 +195,6 @@ router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
       logger.error(`the multer delete error is ${err}`);
     });
 });
-
 router.put("/cover/:userid", verify, singleUpload, async (req, res) => {
   const userid = req.params.userid
   const shop = await Shop.findOne({ user: userid }, { __v: false }).catch(
@@ -240,5 +239,48 @@ router.put("/cover/:userid", verify, singleUpload, async (req, res) => {
       logger.error(`the multer delete error is ${err}`);
     });
 })
+router.get("/items", async function(req, res) {
+
+  const category = req.query.category ? JSON.parse(req.query.category) : null;
+  const priceMax = req.query.priceMax ? req.query.priceMax : null;
+  const priceMin = req.query.priceMin ? req.query.priceMin : null;
+  logger.info(`the params are category ${category} pricemax ${priceMax} pricemin  ${priceMin} `);
+  if (category === null && priceMax === null && priceMin === null) {
+    const allItems = await items.find().catch(error => {
+      logger.error(`the database error is ${error}`);
+    });
+    if (!allItems) {
+      return res
+        .status(400)
+        .send({ message: "There was an error getting the item" });
+    } else {
+      logger.info(`the data without params is ${allItems}`);
+      return res.status(200).send(allItems);
+    }
+  } else {
+    let filter 
+    if (category == null) {
+       filter = { price: { $gt: priceMin, $lt: priceMax }}
+    } else {
+      filter = {
+        price: { $gt: priceMin, $lt: priceMax },
+        category: { $in: category }
+      }
+    }
+    const allItems = await items
+      .find(filter)
+      .catch(error => {
+        logger.error(`the database error is ${error}`);
+      });
+    if (!allItems) {
+      return res
+        .status(400)
+        .send({ message: "There was an error getting the item" });
+    } else {
+      logger.info(`the data  is ${allItems}`);
+      return res.status(200).send(allItems);
+    }
+  }
+});
 
 module.exports = router;

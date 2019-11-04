@@ -14,38 +14,108 @@ const shopDetails = {
 const allItems = [
   {
     title: "Rose Wedding Cake",
-    price: 120,
+    price: 10,
     description: "The tastiest wedding cake",
-    category: "Cake",
-    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
   },
   {
     title: "Macarons",
-    price: 60,
+    price: 5,
     description: "It a delicious cookie of french style",
-    category: "Cookie",
-    photos: ["https://team-chestnut.s3.amazonaws.com/157101601079"]
+    category: "Macarons",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
   },
   {
     title: "Rose Wedding Cake",
-    price: 120,
+    price: 4,
     description: "The tastiest wedding cake",
-    category: "Cake",
-    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    category: "Cupcakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
   },
   {
     title: "Rose Wedding Cake",
-    price: 120,
+    price: 25,
     description: "The tastiest wedding cake",
-    category: "Cake",
-    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
   },
   {
     title: "Rose Wedding Cake",
-    price: 120,
+    price: 15,
     description: "The tastiest wedding cake",
-    category: "Cake",
-    photos: ["https://team-chestnut.s3.amazonaws.com/1571016207297"]
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 32,
+    description: "The tastiest wedding cake",
+    category: "Cupcakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Macarons",
+    price: 28,
+    description: "It a delicious cookie of french style",
+    category: "Cookies",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 38,
+    description: "The tastiest wedding cake",
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 40,
+    description: "The tastiest wedding cake",
+    category: "Cupcakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 41,
+    description: "The tastiest wedding cake",
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 30,
+    description: "The tastiest wedding cake",
+    category: "Cupcakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Macarons",
+    price: 9,
+    description: "It a delicious cookie of french style",
+    category: "Macarons",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 50,
+    description: "The tastiest wedding cake",
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 22,
+    description: "The tastiest wedding cake",
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
+  },
+  {
+    title: "Rose Wedding Cake",
+    price: 32,
+    description: "The tastiest wedding cake",
+    category: "Cakes",
+    photos: ["https://team-chestnut.s3.amazonaws.com/1a350ede83e5c0c4b87586c0d4bad0f66b86da37.png"]
   }
 ];
 
