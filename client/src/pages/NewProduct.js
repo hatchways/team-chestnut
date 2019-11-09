@@ -24,6 +24,26 @@ const useStyles = makeStyles(theme => ({
   },
   addImgIcon: {
     fontSize: "75px"
+  },
+  dropdownForm: {
+    height: "40px",
+    width: "95%",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(0.5),
+    marginLeft: "5%"
+  },
+  dropdownPlaceholder: {
+    height: "40px",
+    transform: "translate(14px, 12px) scale(1)"
+  },
+  dropdownItem: {
+    height: "40px"
+  },
+  priceInput: {
+    width: "100%"
+  },
+  pageTitle: {
+    margin: theme.spacing(4)
   }
 }));
 
@@ -36,13 +56,13 @@ export default function NewProduct(props) {
   }
   return (
     <>
-      <Grid container xs={12} justify="flex-start">
-        <Typography variant="h4" gutterBottom>
+      <Grid container xs={12} justify="flex-start" spacing={2}>
+        <Typography variant="h4" gutterBottom className={classes.pageTitle}>
           Upload new product
         </Typography>
       </Grid>
-      <Grid container component="main">
-        <Grid container xs={12} sm={6} md={6} square>
+      <Grid container component="main" spacing={2}>
+        <Grid container xs={12} sm={6} md={6} square spacing={2}>
           {mapArray.map(index => (
             <Grid
               container
@@ -79,28 +99,42 @@ export default function NewProduct(props) {
             rows="4"
             variant="outlined"
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="standard-multiline-flexible"
-            label="Price"
-            type="price"
-            variant="outlined"
-          />
-          <FormControl variant="outlined">
-            <InputLabel>Type of Product</InputLabel>
-            <Select displayEmpty>
-              <MenuItem value="" disabled>
-                Placeholder
-              </MenuItem>
-              <MenuItem value={10}>Cake</MenuItem>
-              <MenuItem value={20}>Cookie</MenuItem>
-              <MenuItem value={30}>Pastry</MenuItem>
-            </Select>
-          </FormControl>
+          <Grid
+            container
+            xs={12}
+            className={classes.dropdownGrid}
+            justify="space-between"
+          >
+            <Grid item xs={6}>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="standard-multiline-flexible"
+                label="Price"
+                type="price"
+                variant="outlined"
+                className={classes.priceInput}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl variant="outlined" className={classes.dropdownForm}>
+                <InputLabel className={classes.dropdownPlaceholder}>
+                  Type of Product
+                </InputLabel>
+                <Select displayEmpty className={classes.dropdownItem}>
+                  <MenuItem value="" disabled>
+                    Placeholder
+                  </MenuItem>
+                  <MenuItem value={10}>Cake</MenuItem>
+                  <MenuItem value={20}>Cookie</MenuItem>
+                  <MenuItem value={30}>Pastry</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
-      <Grid container xs={12} justify="center">
+      <Grid container xs={12} justify="center" variant="contained">
         <Button>UPLOAD</Button>
       </Grid>
     </>
