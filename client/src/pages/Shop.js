@@ -139,7 +139,7 @@ export default function Shop() {
 
   // fetch shop data
   const token = localStorage.getItem("token");
-  const USER_API = "http://localhost:3001/users/";
+  const USER_API = "/users/";
   // user id will be from userContext in the future
   const decoded = jwt.decode(token, { complete: true });
   const userid = decoded.payload._id;

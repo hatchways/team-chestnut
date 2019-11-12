@@ -134,6 +134,15 @@ router.post(
         .status(400)
         .send({ message: "There was an error saving the item" });
     }
+
+    const updateShop = await Shop.updateOne({ _id: shop._id }, { $push:  { "items": newItem._id } });
+
+    if(!updateShop){
+      return res
+      .status(400)
+      .send({ message: "There was an error updating the shop" });
+    }
+
     logger.info(`the newitem is ${newItem}`);
     return res
       .header("auth-token", token)
@@ -226,6 +235,22 @@ router.get("/items", async function(req, res) {
       return res.status(200).send(allItems);
     }
   }
+});
+
+router.get("/getitem/:itemid", async (req, res, next) => {
+  const itemid = req.params.itemid;
+  const token = req.header("auth-token");
+  // need to authenticate the user authorization to the shop
+  const item = await items.findById(itemid, { __v: false }).catch(err => {
+    logger.error(`the database error is ${err}`);
+  });
+  if (!item) {
+    return res.status(400).send({ message: "Item not found..." });
+  }
+  logger.info(`the newitem is ${item}`);
+  return res
+    .status(200)
+    .send({ item: item });
 });
 
 module.exports = router;
