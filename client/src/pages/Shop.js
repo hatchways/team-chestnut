@@ -8,7 +8,7 @@ import ShopBanner from "../components/shop/ShopBanner";
 import ProductCard from "../components/shop/ProductCard";
 import EditDetailsDialog from "../components/shop/EditDetailsDialog";
 import shopReducer from "../components/shop/shopReducer";
-import EditCoverDialog from "../components/shop/EditCoverDialog";
+import UploadImageDialog from "../components/shop/UploadImageDialog";
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -35,7 +35,8 @@ export default function Shop() {
     shopTitleInput: "",
     editDetailsDialogIsOpen: false,
     editCoverDialogIsOpen: false,
-    coverImageChanged: false
+    coverImageChanged: false,
+    newCover: ""
   });
   // fetch shop data
   const token = localStorage.getItem("token");
@@ -62,7 +63,7 @@ export default function Shop() {
     dispatch({ type: "FETCH_INIT" });
 
     fetchShop();
-  }, [shop.coverImageChanged]);
+  }, []);
   const UPDATE_DETAILS_API = "/shop/details/";
   async function updateDetails() {
     const config = {
@@ -92,7 +93,7 @@ export default function Shop() {
       headers: { "auth-token": token }
     };
     const bodyFormData = new FormData();
-    bodyFormData.append("image", image);
+    bodyFormData.append("image", image[0]);
     try {
       const updateStatus = await axios.put(
         `${UPDATE_COVER_API}${userid}`,
@@ -126,6 +127,7 @@ export default function Shop() {
   };
   const saveCover = image => {
     updateCover(image);
+    dispatch({ type: "STORE_NEW_COVER", image });
   };
   // because our seed data is not unique I had to use map index in the key
   return (
@@ -136,6 +138,8 @@ export default function Shop() {
           dispatch({ type: "OPEN_EDIT_DETAILS_DIALOG" })
         }
         setCoverDialogOpen={() => dispatch({ type: "OPEN_EDIT_COVER_DIALOG" })}
+        coverChanged={shop.coverImageChanged}
+        newCover={shop.newCover}
       />
       <EditDetailsDialog
         saveDetails={saveDetails}
@@ -143,10 +147,13 @@ export default function Shop() {
         handleChange={handleChange}
         shop={shop}
       />
-      <EditCoverDialog
-        saveCover={saveCover}
+      <UploadImageDialog
+        saveImage={saveCover}
+        dialogTitle={"Edit Cover Photo"}
         closeDialog={() => dispatch({ type: "CLOSE_EDIT_COVER_DIALOG" })}
         dialogOpenStatus={shop.editCoverDialogIsOpen}
+        imageCount={1}
+        saveSuccess={shop.coverImageChanged}
       />
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>

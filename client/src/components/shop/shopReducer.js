@@ -93,7 +93,12 @@ export default function shopReducer(state, action) {
         editCoverDialogIsOpen: false,
         coverImageChanged: !state.coverImageChanged
       };
+    case "STORE_NEW_COVER":
+      return {
+        ...state,
+        newCover: action.image
+      };
     default:
-      return null;
+      return { ...state };
   }
 }

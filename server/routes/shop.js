@@ -76,16 +76,27 @@ router.post("/item/:itemid", multipleUpload, verify, async (req, res, next) => {
     .status(200)
     .send({ item: newItem });
 });
-
+/**
+ * @Route("/new-item/:userid", method=POST)
+ * Adds a new item to a user's shop
+ * @param {string} arg userid supplied via path
+ * @param {string} arg auth-token supplied via header
+ * @param {string} arg title of product supplied via JSON body
+ * @param {string} arg description of product supplied via JSON body
+ * @param {string} arg price of product supplied via JSON body
+ * @param {string} arg category of product supplied via JSON body
+ */
 router.post(
   "/new-item/:userid",
   multipleUpload,
   verify,
   async (req, res, next) => {
+    console.log("route accessed");
     const userid = req.params.userid;
     const token = req.header("auth-token");
     // get the store and add then add item
-
+    console.log(userid);
+    console.log(token);
     const shop = await Shop.findOne({ user: userid }, { __v: false }).catch(
       error => {
         logger.error(`the database error in getting the shop ${error}`);
@@ -98,7 +109,6 @@ router.post(
     }
 
     logger.log("info", "The shop details is", shop.toJSON());
-
     const item = new items({
       _id: new mongoose.Types.ObjectId(),
       title: req.body.title ? req.body.title : "",
@@ -107,7 +117,7 @@ router.post(
       category: req.body.category ? req.body.category : "",
       photos: []
     });
-
+    console.log(req.body, req.files);
     if (req.files) {
       req.files.forEach(file => {
         item.photos.push(file.location);
@@ -117,6 +127,7 @@ router.post(
     const newItem = await item.save().catch(error => {
       logger.error(`the database error is ${error}`);
     });
+    // item needs to be connected to a user shop
     if (!newItem) {
       return res
         .status(400)
@@ -195,6 +206,13 @@ router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
       logger.error(`the multer delete error is ${err}`);
     });
 });
+/**
+ * @Route("/cover/:userid", method=PUT)
+ * Updates a user's shop cover photo
+ * @param {string} arg userid supplied via path
+ * @param {string} arg auth-token supplied via header
+ * @param {file} arg image file supplied via body form-data with key "image"
+ */
 router.put("/cover/:userid", verify, singleUpload, async (req, res) => {
   const userid = req.params.userid
   const shop = await Shop.findOne({ user: userid }, { __v: false }).catch(
