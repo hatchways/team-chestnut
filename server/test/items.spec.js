@@ -86,7 +86,7 @@ describe("Testing Items ", () => {
     it("Register a new items", done => {
       chai
         .request(app)
-        .post(`/shop/new-item/${userMock._id}`)
+        .post(`/shop/items/new-item/${userMock._id}`)
         .set("auth-token", authToken)
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake Delicious")
@@ -124,7 +124,7 @@ describe("Testing Items ", () => {
     it("Item update returns 200", done => {
       chai
         .request(app)
-        .post(`/shop/item/${mockItem._id}`)
+        .put(`/shop/items/${mockItem._id}`)
         .set("auth-token", authToken)
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake")
@@ -159,7 +159,7 @@ describe("Testing Items ", () => {
     it("Item update, should return 401", done => {
       chai
         .request(app)
-        .post(`/shop/item/${mockItem._id}`)
+        .put(`/shop/items/${mockItem._id}`)
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake Delicious")
         .field(
@@ -185,7 +185,7 @@ describe("Testing Items ", () => {
     it("Item update, return 400, token invalid", done => {
       chai
         .request(app)
-        .post(`/shop/item/${mockItem._id}`)
+        .put(`/shop/items/${mockItem._id}`)
         .set("auth-token", "12345")
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake")
@@ -212,7 +212,7 @@ describe("Testing Items ", () => {
     it("it should return 400, item not found", done => {
       chai
         .request(app)
-        .post(`/shop/item/123456`)
+        .put(`/shop/items/123456`)
         .set("auth-token", authToken)
         .field("Content-Type", "multipart/form-data")
         .field("title", "Red Velvet Cake Delicious")

@@ -132,6 +132,7 @@ export default function FilteredList(props) {
   }
 
   useEffect(() => {
+
     let parameters = { category: [], priceMin: 0, priceMax: 0 };
     let zeroRecorded = false;
     priceTypes.forEach(pro => {
