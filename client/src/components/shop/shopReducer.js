@@ -98,6 +98,11 @@ export default function shopReducer(state, action) {
         ...state,
         newCover: action.image
       };
+    case "NEW_PRODUCT_CLICKED":
+      return {
+        ...state,
+        goToNewProduct: true
+      }
     default:
       return { ...state };
   }

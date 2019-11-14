@@ -16,7 +16,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "100vh",
+    height: "80vh",
+    // max height not working
+    maxHeight: "500px",
     justifyContent: "space-around"
   },
   editCoverBtn: {

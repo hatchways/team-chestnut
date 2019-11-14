@@ -4,11 +4,13 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import jwt from "jsonwebtoken";
+import { Redirect } from "react-router-dom";
 import ShopBanner from "../components/shop/ShopBanner";
-import ProductCard from "../components/shop/ProductCard";
+import ProductCard, { NewProductCard } from "../components/shop/ProductCard";
 import EditDetailsDialog from "../components/shop/EditDetailsDialog";
 import shopReducer from "../components/shop/shopReducer";
 import UploadImageDialog from "../components/shop/UploadImageDialog";
+
 
 const useStyles = makeStyles(theme => ({
   cardGrid: {
@@ -36,7 +38,8 @@ export default function Shop() {
     editDetailsDialogIsOpen: false,
     editCoverDialogIsOpen: false,
     coverImageChanged: false,
-    newCover: ""
+    newCover: "",
+    goToNewProduct: false
   });
   // fetch shop data
   const token = localStorage.getItem("token");
@@ -129,6 +132,10 @@ export default function Shop() {
     updateCover(image);
     dispatch({ type: "STORE_NEW_COVER", image });
   };
+  if (shop.goToNewProduct === true) {
+    console.log(shop.goToNewProduct);
+    return <Redirect to={"/shop/new-product"} />;
+  }
   // because our seed data is not unique I had to use map index in the key
   return (
     <>
@@ -165,6 +172,7 @@ export default function Shop() {
               key={`${product.title}${product.price}${index}`}
             />
           ))}
+          <NewProductCard onNewProductClick={()=>dispatch({ type: "NEW_PRODUCT_CLICKED" })} />
         </Grid>
       </Container>
     </>
