@@ -25,7 +25,9 @@ const usersSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  shop: { type: mongoose.Schema.Types.ObjectId, ref: "shops" }
+  shop: { type: mongoose.Schema.Types.ObjectId, ref: "shops" },
+  orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "orders" }],
+  address:[{ type: mongoose.Schema.Types.ObjectId, ref: "addresses" }],
 });
 
 module.exports = mongoose.model("users", usersSchema);

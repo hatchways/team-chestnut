@@ -8,7 +8,7 @@ import AllProducts from './pages/AllProducts'
 import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
-import Admin from "./pages/admin";
+import Admin from "./pages/Admin";
 import {ProtectedRoute} from './components/protectedRoute'
 
 function App() {
