@@ -8,7 +8,7 @@ Scope of Project:
 	• Filter feed to shop - filter by type of bake goods, price
     Messenger for bakers and shoppers to discuss customized orders
 
-# MangoDb
+# MongoDb
 To Run MongoDb in mac with mongoose, follow three steps
 1. Install community edition MongoDb in your local machine following the instructions in the [link](https://docs.mongodb.com/manual/administration/install-community/)
 2. Start the MongoDb with brew  `$ brew services start mongodb-community` or manually `$ mongod --config /usr/local/etc/mongod.conf`
@@ -90,3 +90,13 @@ Auto format javascript documents by pressing cmd + shift  + P and click Format D
 
 # Server logger
 The server user Winston logger for logging. The logs will be in the utils/logs. 
+
+# .env variables
+DB_CONNECT 
+TOKEN_SECRET 
+BUCKET_NAME
+IAM_USER_KEY 
+IAM_USER_SECRET 
+BUCKET_REGION 
+TEST_DB 
+
