@@ -83,7 +83,7 @@ export default function SingleProduct() {
   useEffect(() => {
     if (productid !== null) {
       setLoading(true);
-      fetchGet(`/shop/getitem/${productid}`).then((res, err) => {
+      fetchGet(`/shop/items/${productid}`).then((res, err) => {
         if (typeof res === "object") {
           setData([res.item]);
           setLoading(false);

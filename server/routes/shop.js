@@ -38,7 +38,7 @@ router.post(
   }
 );
 
-router.post("/item/:itemid", multipleUpload, verify, async (req, res, next) => {
+router.put("/items/:itemid", multipleUpload, verify, async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");
   // need to authenticate the user authorization to the shop
@@ -78,7 +78,7 @@ router.post("/item/:itemid", multipleUpload, verify, async (req, res, next) => {
 });
 
 router.post(
-  "/new-item/:userid",
+  "/items/new-item/:userid",
   multipleUpload,
   verify,
   async (req, res, next) => {
@@ -163,7 +163,7 @@ router.put("/details/:userid", verify, async (req, res) => {
     .status(200)
     .send(shop);
 });
-router.post("/item/delete-image/:itemid", verify, async (req, res, next) => {
+router.post("/items/:itemid/delete-image", verify, async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");
   const imageUrl = req.body.image;
@@ -292,7 +292,7 @@ router.get("/items", async function(req, res) {
   }
 });
 
-router.get("/getitem/:itemid", async (req, res, next) => {
+router.get("/items/:itemid", async (req, res, next) => {
   const itemid = req.params.itemid;
   const token = req.header("auth-token");
   // need to authenticate the user authorization to the shop
