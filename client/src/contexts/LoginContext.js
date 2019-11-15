@@ -10,9 +10,9 @@ export const LoginProvider = props => {
     localStorage.removeItem("token");
     setLogin("loggedOut");
   };
-
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem('cart')));
   return (
-    <LoginContext.Provider value={{ login, setLogin, Logout, user, setUser }}>
+    <LoginContext.Provider value={{ login, setLogin, Logout, user, setUser, cart, setCart }}>
       {props.children}
     </LoginContext.Provider>
   );

@@ -8,7 +8,6 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Icon from "@material-ui/core/Icon";
-
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
 
@@ -57,6 +56,17 @@ const navStyles = makeStyles(theme => ({
     position: "absolute",
     top: "5px",
     left: "90px"
+  },
+  cart: {
+    position: "relative",
+    display: "inline-block",
+    top: "-19px",
+    right: "31px",
+    color: "red",
+    fontSize: 14,
+    fontWeight: 800,
+    width: "20px",
+    textAlign: "center"
   }
 }));
 
@@ -97,11 +107,11 @@ function SigninPaths(props) {
     }
 
     return () => {};
-  }, [props.login, currentPage]);
+  }, [props.login, currentPage, props.cart]);
 
   return (
     <div>
-      {ModifyLinks.map((linked) => {
+      {ModifyLinks.map(linked => {
         if (linked.sublinks) {
           return (
             <MyAccount
@@ -118,6 +128,12 @@ function SigninPaths(props) {
           </Link>
         );
       })}
+      {props.cart !== null && (
+        <Link href={"/cart"} className={classes.link}>
+          <Icon fontSize={"large"}>shopping_cart_basket</Icon>{" "}
+          <span className={classes.cart}>{props.cart.total}</span>
+        </Link>
+      )}
     </div>
   );
 }
@@ -139,7 +155,7 @@ function MyAccount({ items, label, Logout }) {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      {items.map((item) => {
+      {items.map(item => {
         if (item.label === "Logout") {
           return (
             <MenuItem onClick={() => Logout(history)} key={item.label}>
@@ -179,7 +195,6 @@ function MyAccount({ items, label, Logout }) {
 export default function Navbar() {
   const classes = navStyles();
   const props = useContext(LoginContext);
-
   return (
     <BrowserRouter>
       <AppBar
