@@ -59,12 +59,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 function newProductReducer(state, action) {
+  const urls = [];
   switch (action.type) {
     case "OPEN_IMAGE_DIALOG":
       return {
         ...state,
-        uploadDialogOpenStatus: true,
-        currentImageIndex: action.index
+        uploadDialogOpenStatus: true
       };
     case "CLOSE_IMAGE_DIALOG":
       return {
@@ -72,9 +72,13 @@ function newProductReducer(state, action) {
         uploadDialogOpenStatus: false
       };
     case "SELECTED_PRODUCT_IMAGE":
+      for (let i = 0; i < action.images.length; i += 1) {
+        urls.push(URL.createObjectURL(action.images[i]));
+      }
       return {
         ...state,
         productImages: [...state.productImages, ...action.images],
+        productImageURLs: [...state.productImageURLs, ...urls],
         uploadDialogOpenStatus: false
       };
     case "USER_FORM_INPUT":
@@ -105,7 +109,7 @@ export default function NewProduct(props) {
     validatedStatus: false,
     uploadDialogOpenStatus: false,
     productImages: [],
-    currentImageIndex: 0,
+    productImageURLs: [],
     isLoading: "",
     error: "",
     uploadCompleted: false
@@ -113,11 +117,8 @@ export default function NewProduct(props) {
   const classes = useStyles();
   const gridSpacing = 2;
   // should fetch catagories in future
+  // Should user be able to create new catagories?
   const productCategories = ["Cake", "Pastry", "Cookie"];
-  let mapArray = [];
-  for (let i = 0; i < imageCount; i += 1) {
-    mapArray.push(i);
-  }
   const handleImage = images => {
     dispatch({ type: "SELECTED_PRODUCT_IMAGE", images });
     return null;
@@ -177,31 +178,33 @@ export default function NewProduct(props) {
           spacing={gridSpacing}
           justify="center"
         >
-          {mapArray.map(index => (
+          {state.productImageURLs.map(item => (
             <Grid
               container
               xs={3}
               sm={3}
               md={3}
               className={classes.productImg}
-              key={index}
+              key={item}
               justify="center"
               alignItems="center"
-              onClick={() => dispatch({ type: "OPEN_IMAGE_DIALOG", index })}
               style={{
-                backgroundImage:
-                  state.productImages.length > index
-                    ? `url(${URL.createObjectURL(state.productImages[index])})`
-                    : ""
+                backgroundImage: `url(${item})`
               }}
-            >
-              <AddIcon
-                style={
-                  state.productImages.length <= index ? {} : { display: "none" }
-                }
-              />
-            </Grid>
+            />
           ))}
+          <Grid
+            container
+            xs={3}
+            sm={3}
+            md={3}
+            className={classes.productImg}
+            justify="center"
+            alignItems="center"
+            onClick={() => dispatch({ type: "OPEN_IMAGE_DIALOG" })}
+          >
+            <AddIcon />
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={6} md={6}>
           <TextField
