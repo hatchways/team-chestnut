@@ -9,6 +9,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FilteredList from "../components/FilterList";
 import { fetchGet } from "../utils/ApiFetching";
+import Link from '@material-ui/core/Link';
+import Skeleton from '@material-ui/lab/Skeleton';
+
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -50,6 +53,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Album() {
   const classes = useStyles();
+  const [loading, setLoading] = useState(true)
   const [shopItems, setShopItems] = useState([
 
   ]);
@@ -60,6 +64,7 @@ export default function Album() {
 
   useEffect(() => {
     let params;
+    
     if (filters !== null) {
       if (filters.category[0] === "All") {
         params = {
@@ -73,9 +78,11 @@ export default function Album() {
           priceMax: filters.priceMax
         };
       }
+      setLoading(true);
       fetchGet("/shop/items", params).then((res, err) => {
-        if (res !== 'Failed to fetch') {
+        if (Array.isArray(res)) {
           setShopItems(res);
+          setLoading(false)
         }
       });
     }
@@ -119,22 +126,27 @@ export default function Album() {
             <Grid item xs={12} sm={9}>
               <Container className={classes.cardGrid} maxWidth="lg">
                 <Grid container spacing={3}>
-                  {shopItems.map((card, i) => (
-                    <Grid item key={card._id} xs={12} sm={6} md={4}>
+                  {(loading ? Array.from(new Array(9)) : shopItems).map((card, i) => (
+                    <Grid item key={card ? card._id : i} xs={12} sm={6} md={4}>
+                       {card ? (
                       <Card className={classes.card} key={card._id}>
+                      <Link href={'/products/'+card._id} className={classes.link}>
                         <CardMedia
                           className={classes.cardMedia}
                           image={card.photos[0]}
                           title={card.title}
                           key={card._id}
                         />
+                         </Link>
                         <CardContent className={classes.cardContent}>
                           <Typography align="center">{card.title}</Typography>
                           <Typography gutterBottom align="center">
                             ${card.price}
                           </Typography>
                         </CardContent>
-                      </Card>
+                      </Card>) : (
+                  <Skeleton variant="rect" width={250} height={300} />
+               )}
                     </Grid>
                   ))}
                 </Grid>
