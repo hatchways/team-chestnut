@@ -1,15 +1,15 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch} from "react-router-dom";
-import { theme } from "./themes/theme";
-import Navbar from "./components/navbar/navbar";
+import { theme } from "./themes/Theme";
+import Navbar from "./components/navbar/Navbar";
 import SignAll from "./pages/SignAll";
 import AllProducts from './pages/AllProducts'
 import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/Admin";
-import {ProtectedRoute} from './components/protectedRoute'
+import {ProtectedRoute} from './components/ProtectedRoute'
 
 function App() {
   return (

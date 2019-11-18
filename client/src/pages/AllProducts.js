@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FilteredList from "../components/FilterList";
-import { fetchGet } from "../utils/apiFetching";
+import { fetchGet } from "../utils/ApiFetching";
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -73,7 +73,7 @@ export default function Album() {
           priceMax: filters.priceMax
         };
       }
-      fetchGet("http://localhost:3001/shop/items", params).then((res, err) => {
+      fetchGet("/shop/items", params).then((res, err) => {
         if (res !== 'Failed to fetch') {
           setShopItems(res);
         }
