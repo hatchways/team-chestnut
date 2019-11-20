@@ -129,7 +129,7 @@ function SigninPaths(props) {
         );
       })}
       {props.cart !== null && (
-        <Link href={"/cart"} className={classes.link}>
+        <Link href={"/checkout"} className={classes.link}>
           <Icon fontSize={"large"}>shopping_cart_basket</Icon>{" "}
           <span className={classes.cart}>{props.cart.total}</span>
         </Link>

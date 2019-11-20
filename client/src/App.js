@@ -11,7 +11,8 @@ import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/Admin";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import SingleProducts from "./pages/SingleProduct";
-
+import Checkout from './pages/Checkout';
+import {StripeProvider} from 'react-stripe-elements';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route exact path="/signin" component={SignAll} />
             <Route exact path="/signup" component={SignAll} />
             <Route exact path="/products" component={AllProducts} />
+           
             <Route
               exact
               path="/products/:productid"
@@ -31,6 +33,9 @@ function App() {
             />
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
+            <StripeProvider apiKey="pk_test_0r8FCK7bb2AZQtx3doB5XySZ">
+              <Route exact path="/checkout" component={Checkout} />
+            </StripeProvider>
           </Switch>
         </BrowserRouter>
       </MuiThemeProvider>

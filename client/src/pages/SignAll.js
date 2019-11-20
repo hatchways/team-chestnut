@@ -205,7 +205,7 @@ export default function SignAll() {
             setStatusMessage(res.message);
             setOpen(true);
           } else {
-            localStorage.setItem("token", res.token);
+            sessionStorage.setItem("token", res.token);
             props.setLogin("loggedIn");
             history.push("/admin");
           }

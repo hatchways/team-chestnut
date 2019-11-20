@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { BrowserRouter as Router, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -14,6 +14,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import PropTypes from "prop-types";
 import { LoginContext } from "../contexts/LoginContext";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   fontweight: {
@@ -69,6 +70,7 @@ export default function SingleProduct() {
   const classes = useStyles();
   let { productid } = useParams();
   const props = useContext(LoginContext);
+  const history = useHistory();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -116,6 +118,9 @@ export default function SingleProduct() {
 
     localStorage.setItem("cart", JSON.stringify(orders));
     props.setCart(orders);
+
+    history.push("/checkout");
+
   };
 
   const MutilpleImages = photos => {
@@ -158,6 +163,7 @@ export default function SingleProduct() {
   };
 
   return (
+
     <Container maxWidth="xl">
       <Grid container className={classes.padding}>
         {(loading ? Array.from(new Array(1)) : data).map((item, index) => (
@@ -166,6 +172,7 @@ export default function SingleProduct() {
               <React.Fragment>
                 <Grid container spacing={1}>
                   <Grid item xs={12} md={1}>
+
                     <Grid container>
                       <MutilpleImages photos={item.photos} />
                     </Grid>
