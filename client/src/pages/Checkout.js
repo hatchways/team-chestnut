@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-// import AppBar from "@material-ui/core/AppBar";
-// import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
@@ -23,7 +21,7 @@ import { useHistory } from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import { LoginContext } from "../contexts/LoginContext";
-import {Elements} from 'react-stripe-elements';
+import { Elements } from 'react-stripe-elements';
 
 
 const useStyles = makeStyles(theme => ({
@@ -112,7 +110,7 @@ export default function Checkout(props) {
     phone: { value: '', error: false, errorText: 'Please enter a phone number' },
   });
   const [validationError, setValidationError] = useState('');
-  const [cart,setCart] = useState(JSON.parse(localStorage.getItem("cart")));
+  const [cart, setCart] = useState(JSON.parse(localStorage.getItem("cart")));
   const history = useHistory();
   const lCon = useContext(LoginContext);
 
@@ -156,11 +154,11 @@ export default function Checkout(props) {
 
   }, []);
 
-  useEffect(()=>{
-    if (deleteProduct !== ''){
+  useEffect(() => {
+    if (deleteProduct !== '') {
       let deleteOrder = {}
-      const newOrders = orders.filter((ele, i)=> {
-        if(ele._id === deleteProduct){
+      const newOrders = orders.filter((ele, i) => {
+        if (ele._id === deleteProduct) {
           deleteOrder.subTotal = ele.subTotal
           deleteOrder.qty = ele.qty
           return false
@@ -169,9 +167,9 @@ export default function Checkout(props) {
       });
       setOrders(newOrders);
       console.log(deleteOrder);
-      setTotal(total-deleteOrder.subTotal);
+      setTotal(total - deleteOrder.subTotal);
 
-      if (newOrders.length>0){  
+      if (newOrders.length > 0) {
         let cart = JSON.parse(localStorage.getItem("cart"));
         delete cart[deleteProduct];
         cart.total = cart.total - deleteOrder.qty
@@ -185,7 +183,7 @@ export default function Checkout(props) {
       }
     }
 
-  },[deleteProduct])
+  }, [deleteProduct])
 
   useEffect(() => {
     if (orderDetails.firstName.reload === true) {
@@ -212,7 +210,7 @@ export default function Checkout(props) {
         }
       });
     }
-    console.log('nect button')
+
   };
 
   const handleBack = () => {
@@ -232,17 +230,17 @@ export default function Checkout(props) {
 
 
   const continueShopping = () => {
-    console.log('this is order',orderDetails ) 
+    console.log('this is order', orderDetails)
     // do i need to set a new state?
-    if(orderDetails.firstName.value !== '' && orderDetails.lastName.value !== ''){
+    if (orderDetails.firstName.value !== '' && orderDetails.lastName.value !== '') {
       sessionStorage.setItem('details', JSON.stringify(orderDetails));
     }
     history.push("/");
   }
 
-  const orderValidation = () =>{
+  const orderValidation = () => {
     console.log('order button');
-  
+
   }
 
   function ContinueButton() {
@@ -258,7 +256,7 @@ export default function Checkout(props) {
     </Button>)
   }
 
- 
+
 
   function getStepContent(step) {
     switch (step) {
@@ -266,11 +264,11 @@ export default function Checkout(props) {
         return <AddressForm formData={formValidations} details={orderDetails} />;
       case 1:
         return (
-        <React.Fragment >
-        <Elements> 
-          <PaymentForm details={orderDetails} formData={orderValidation} />
-          </Elements>
-        </React.Fragment>
+          <React.Fragment >
+            <Elements>
+              <PaymentForm details={orderDetails} setActiveStep={setActiveStep} activeStep={activeStep} formData={orderValidation} />
+            </Elements>
+          </React.Fragment>
         );
       case 2:
         return <Review details={orderDetails} />;
@@ -278,7 +276,7 @@ export default function Checkout(props) {
         throw new Error("Unknown step");
     }
   }
-  const handleDelete = (id) =>{
+  const handleDelete = (id) => {
     setDeleteProduct(id);
   }
 
@@ -335,19 +333,19 @@ export default function Checkout(props) {
                           <React.Fragment>
                             {getStepContent(activeStep)}
                             <div className={classes.buttons}>
-                              {activeStep !== 0 && (
-                          <Button onClick={handleBack} className={classes.button}>
-                                  Back
-                        </Button>
-                              )}
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={event => handleNext(event)} 
-                                className={classes.button}
-                              >
-                                {activeStep === steps.length - 1 ? "Place order" : "Next"}
-                              </Button>
+                              {activeStep === 0 ? (
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={event => handleNext(event)}
+                                  className={classes.button}
+                                >
+                                  Next
+                         </Button>
+                              ) : (
+                                  <div></div>
+                                )}
+
                             </div>
                           </React.Fragment>
 
@@ -375,12 +373,12 @@ export default function Checkout(props) {
                                     <Typography >
                                       ${card.price} - Quantity: {card.qty}
                                     </Typography>
-                                   
+
                                   </CardContent>
                                   <CardContent className={classes.cardDelete}>
-                                  <IconButton className={classes.button} aria-label="delete" style={{marginLeft:'0px', padding:5} } onClick={()=>handleDelete(card._id) }> <DeleteIcon /></IconButton>
+                                    <IconButton className={classes.button} aria-label="delete" style={{ marginLeft: '0px', padding: 5 }} onClick={() => handleDelete(card._id)}> <DeleteIcon /></IconButton>
                                   </CardContent>
-                              
+
                                 </Card>) : (
                                   <Skeleton variant="rect" width={250} height={300} />
                                 )}

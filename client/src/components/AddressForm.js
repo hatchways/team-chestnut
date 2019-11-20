@@ -1,22 +1,33 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-// import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  buttons: {
+    display: "flex",
+    justifyContent: "center"
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(1)
+  },
+}));
 
 
 export default function AddressForm(props) {
+  const classes = useStyles();
   const [country, setCountry] = React.useState('Canada');
   const handleChange = (event, type) => {
     setCountry(event.target.value);
-    props.formData(type,event.target.value)
+    props.formData(type, event.target.value)
   }
 
-  function handleData (event, type) {
-    props.formData(type,event.target.value);
+  function handleData(event, type) {
+    props.formData(type, event.target.value);
   };
 
   return (
@@ -24,7 +35,7 @@ export default function AddressForm(props) {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
-          variant="outlined"
+            variant="outlined"
             required
             id="firstName"
             name="firstName"
@@ -33,14 +44,14 @@ export default function AddressForm(props) {
             autoComplete="billing first-name"
             onChange={event => handleData(event, 'firstName')}
             autoFocus
-            error = {props.details.firstName.error}
-            helperText= {props.details.firstName.error? props.details.firstName.errorText : '' }
-            value = {props.details.firstName.value}
+            error={props.details.firstName.error}
+            helperText={props.details.firstName.error ? props.details.firstName.errorText : ''}
+            value={props.details.firstName.value}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-           variant="outlined"
+            variant="outlined"
             required
             id="lastName"
             name="lastName"
@@ -48,37 +59,37 @@ export default function AddressForm(props) {
             fullWidth
             autoComplete="billing family-name"
             onChange={event => handleData(event, 'lastName')}
-            error = {props.details.lastName.error}
-            helperText= {props.details.lastName.error? props.details.lastName.errorText : '' }
-            value = {props.details.lastName.value}
+            error={props.details.lastName.error}
+            helperText={props.details.lastName.error ? props.details.lastName.errorText : ''}
+            value={props.details.lastName.value}
           />
         </Grid>
-        
+
         <Grid item xs={12} sm={6} >
-        <InputLabel id="country-label">Country / Region</InputLabel>
-            <Select
+          <InputLabel id="country-label">Country / Region</InputLabel>
+          <Select
             native
             fullWidth
             onChange={event => handleChange(event, 'country')}
             variant="outlined"
-            value = {props.details.country.value}
+            value={props.details.country.value}
           >
-          <option value={'Canada'}>Canada</option>
-          <option value={'USA'}>USA</option>
+            <option value={'Canada'}>Canada</option>
+            <option value={'USA'}>USA</option>
           </Select>
         </Grid>
         <Grid item xs={12} sm={6}>
-        <InputLabel id="city-label">City</InputLabel>
-          <TextField id="city" name="city" label="City" fullWidth   variant="outlined"
-          onChange={event => handleData(event, 'city')}
-                  error = {props.details.city.error}
-                  helperText= {props.details.city.error? props.details.city.errorText : '' }
-                  value = {props.details.city.value}
+          <InputLabel id="city-label">City</InputLabel>
+          <TextField id="city" name="city" label="City" fullWidth variant="outlined"
+            onChange={event => handleData(event, 'city')}
+            error={props.details.city.error}
+            helperText={props.details.city.error ? props.details.city.errorText : ''}
+            value={props.details.city.value}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
-           variant="outlined"
+            variant="outlined"
             required
             id="address"
             name="address"
@@ -86,14 +97,14 @@ export default function AddressForm(props) {
             fullWidth
             autoComplete="billing address-line1"
             onChange={event => handleData(event, 'address')}
-            error = {props.details.address.error}
-            helperText= {props.details.address.error? props.details.address.errorText : '' }
-            value = {props.details.address.value}
+            error={props.details.address.error}
+            helperText={props.details.address.error ? props.details.address.errorText : ''}
+            value={props.details.address.value}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-           variant="outlined"
+            variant="outlined"
             required
             id="zip"
             name="zip"
@@ -101,14 +112,14 @@ export default function AddressForm(props) {
             fullWidth
             autoComplete="billing postal-code"
             onChange={event => handleData(event, 'zip')}
-            error = {props.details.zip.error}
-            helperText= {props.details.zip.error? props.details.zip.errorText : '' }
-            value = {props.details.zip.value}
+            error={props.details.zip.error}
+            helperText={props.details.zip.error ? props.details.zip.errorText : ''}
+            value={props.details.zip.value}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-           variant="outlined"
+            variant="outlined"
             required
             id="phone"
             name="phone"
@@ -117,13 +128,14 @@ export default function AddressForm(props) {
             autoComplete="billing phone"
             type="tel"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-            onChange={ event => handleData(event, 'phone')}
-            error = {props.details.phone.error}
-            helperText= {props.details.phone.error? props.details.phone.errorText : '' }
-            value = {props.details.phone.value}
+            onChange={event => handleData(event, 'phone')}
+            error={props.details.phone.error}
+            helperText={props.details.phone.error ? props.details.phone.errorText : ''}
+            value={props.details.phone.value}
           />
         </Grid>
       </Grid>
+
     </React.Fragment>
   );
 }
