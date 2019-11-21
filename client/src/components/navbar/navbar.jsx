@@ -77,10 +77,10 @@ function SigninPaths(props) {
 
   const mainUrls = {
     loggedIn: [
-      { label: "Shop", path: "/shop" },
+      { label: "Shop", path: "/" },
       { label: "Messages", path: "/messages" },
       { label: "My Favourites", path: "/my_shop" },
-      { label: "My Shop", path: "/my_account" },
+      { label: "My Shop", path: "/shop" },
       {
         label: "My Account",
         path: "/my_shop",

@@ -9,6 +9,7 @@ import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/Admin";
+import Messages from "./pages/Messages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import SingleProducts from "./pages/SingleProduct";
 
@@ -30,6 +31,7 @@ function App() {
             />
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
+            <ProtectedRoute exact path="/messages" component={Messages} />
           </Switch>
         </BrowserRouter>
       </MuiThemeProvider>
