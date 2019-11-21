@@ -16,7 +16,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "100vh",
+    height: "80vh",
+    // max height not working
+    maxHeight: "500px",
     justifyContent: "space-around"
   },
   editCoverBtn: {
@@ -56,7 +58,11 @@ export default function ShopBanner(props) {
         sm={4}
         md={7}
         className={classes.image}
-        style={{ backgroundImage: `url(${props.shop.shopData.cover_photo})` }}
+        style={{
+          backgroundImage: props.coverChanged
+            ? `url(${URL.createObjectURL(props.newCover[0])})`
+            : `url(${props.shop.shopData.cover_photo})`
+        }}
       >
         <Button
           className={classes.editCoverBtn}

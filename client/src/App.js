@@ -11,6 +11,7 @@ import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/Admin";
 import Messages from "./pages/Messages";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import NewProduct from "./pages/NewProduct";
 import SingleProducts from "./pages/SingleProduct";
 
 function App() {
@@ -32,6 +33,11 @@ function App() {
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
             <ProtectedRoute exact path="/messages" component={Messages} />
+            <ProtectedRoute
+              exact
+              path="/shop/new-product"
+              component={NewProduct}
+            />
           </Switch>
         </BrowserRouter>
       </MuiThemeProvider>

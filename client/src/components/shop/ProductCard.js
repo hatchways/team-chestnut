@@ -8,6 +8,7 @@ import FavoriteBorderOutlinedIcon from "@material-ui/icons/FavoriteBorderOutline
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -44,6 +45,9 @@ const useStyles = makeStyles(() => ({
   cardHeader: {
     height: "0px",
     width: "100%"
+  },
+  newProductIcon: {
+    margin: "auto"
   }
 }));
 
@@ -89,6 +93,23 @@ export default function ProductCard(props) {
             {props.product.title}
           </Typography>
           <Typography>{props.product.price}</Typography>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+}
+
+export function NewProductCard(props) {
+  const classes = useStyles();
+  return (
+    <Grid item xs={12} sm={6} md={4}>
+      <Card className={classes.card} onClick={() => props.onNewProductClick()}>
+        <CardContent className={classes.cardContent}>
+          <AddIcon className={classes.newProductIcon} />
+          <Typography gutterBottom variant="h5" component="h2">
+            Add a new product
+          </Typography>
+          <Typography>$0</Typography>
         </CardContent>
       </Card>
     </Grid>
