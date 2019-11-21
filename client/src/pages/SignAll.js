@@ -207,7 +207,7 @@ export default function SignAll() {
           } else {
             sessionStorage.setItem("token", res.token);
             props.setLogin("loggedIn");
-            history.push("/admin");
+            history.push("/");
           }
         })
         .catch(err => {
