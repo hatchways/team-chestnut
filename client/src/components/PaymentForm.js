@@ -50,11 +50,12 @@ function PaymentForm(props) {
 
   const handlePaymentSubmit = e => {
     e.preventDefault();
+    props.disable.setPostDisable(true);
     props.stripe
       .createToken({
         type: "card",
         name:
-          props.details.firstName.value + " " + props.details.lastName.value,
+        props.details.firstName.value + " " + props.details.lastName.value,
         address_line1: props.details.address.value,
         address_city: props.details.city.value,
         address_zip: props.details.zip.value,
@@ -74,7 +75,7 @@ function PaymentForm(props) {
 
   const handleBack = e => {
     e.preventDefault();
-    props.setActiveStep(props.activeStep - 1);
+    props.setting.setActiveStep(props.setting.activeStep - 1);
   };
 
   const handleClose = (event, reason) => {
@@ -135,6 +136,7 @@ function PaymentForm(props) {
             color="primary"
             onClick={handlePaymentSubmit}
             className={classes.button}
+            disabled = {props.disable.postDisable}
           >
             Place Order
           </Button>

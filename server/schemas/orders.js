@@ -19,14 +19,15 @@ let ordersSchema = new mongoose.Schema({
   },
   orders: [
     {
-      items: { type: mongoose.Schema.Types.ObjectId, ref: "items" },
+      item: { type: mongoose.Schema.Types.ObjectId, ref: "items" },
       quantity: { type: Number, required: true }
     }
   ],
   stripeId: {
     type: Number,
   },
-  shipTo: { type: mongoose.Schema.Types.ObjectId, ref: "addresses" },
+  shipTo: { type: String },
+  receipt_url: {type: String}
 });
 
 module.exports = mongoose.model("orders", ordersSchema);

@@ -93,10 +93,10 @@ export default function Checkout(props) {
   const classes = useStyles();
   const history = useHistory();
   const loginContext = useContext(LoginContext);
-
   const [activeStep, setActiveStep] = useState(0);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [postDisable, setPostDisable] = useState(false)
   const [total, setTotal] = useState(0);
   const [deleteProduct, setDeleteProduct] = useState("");
   const [orderDetails, setOrderDetails] = useState({
@@ -126,6 +126,8 @@ export default function Checkout(props) {
       disabled: true
     }
   });
+
+  const allKeys = Object.keys(orderDetails);
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("details"));
@@ -220,7 +222,7 @@ export default function Checkout(props) {
   
 
   const handleNext = e => {
-    let allKeys = Object.keys(orderDetails);
+    
     allKeys.forEach((ele, i) => {
       if (orderDetails[ele].value === "") {
         setValidationError(true);
@@ -278,26 +280,45 @@ export default function Checkout(props) {
   }
 
   const updateTotal = cost => {
-    setOrderDetails(prev => {
-      return { ...prev, shippingCost: cost };
-    });
-  };
-
+      setOrderDetails(prev => {
+        return { ...prev, shippingCost: cost };
+      });
+    };
+   
+    
   const postData = token => {
-    fetchPost("/checkout", {
-      orders,
-      orderDetails,
-      shipping,
-      token,
-      total
-    }).then((res, err) => {
-      if (res) {
-        console.log("Res is", res);
-        setActiveStep(props.activeStep + 1);
-        // I can show the success message.. later step
-        // give the order number... later step
-      }
+    const details = {};
+    allKeys.forEach((ele, i) => {
+      details[ele] = orderDetails[ele].value;
     });
+    details['shippingCost'] = orderDetails['shippingCost'] // shippingCost had no value
+
+    Object.keys(shipping).forEach((ele, i) => {
+      details[ele] = shipping[ele].value;
+    });
+
+    const data = {
+      orders: loginContext.cart,
+      details,
+      token: token.id,
+      total,
+      user: loginContext.user
+    }
+
+    console.log('this is the data', data);
+  
+      fetchPost("/checkout/charge",data).then((res, err) => {
+        setPostDisable(false)
+        if (res['success']) {
+          setActiveStep(activeStep + 1);
+          localStorage.removeItem('cart');
+          loginContext.setCart(null);
+        } 
+        if(res['error']){
+          console.log('there is a error',res['error'])
+          // need to handle the error;
+        }
+      });
   };
 
   function getStepContent(step) {
@@ -322,9 +343,9 @@ export default function Checkout(props) {
           <React.Fragment>
             <Elements>
               <PaymentForm
-                setActiveStep={setActiveStep}
-                activeStep={activeStep}
-                post={postData}
+                setting={{setActiveStep, activeStep}}
+                disable ={{postDisable, setPostDisable}}
+                post={postData} 
                 details={orderDetails}
                 shipping={shipping}
               />

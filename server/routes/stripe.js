@@ -2,205 +2,116 @@ const router = require("express").Router();
 const User = require("../schemas/users");
 const Order = require("../schemas/orders");
 const Address = require("../schemas/address");
-const stripe = require("stripe")("sk_test_...");
-const verify = require("./verify-token");
+const stripe = require("stripe")(process.env.STRIPE_KEY);
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const logger = require("../utils/logger");
 
-router.post("/checkout/", verify, async (req, res, next) => {
-  // need to make payment,
-  // need customers id, and items, quantiy,
-  // user details... if registered user and shipping is same dont update the addresses, else update address
-  //
+router.post("/charge", async (req, res, next) => {
+  let amount = parseFloat(req.body.total) + (req.body.details.shippingCost ? parseFloat(req.body.details.shippingCost) : 0);
 
-  const userid = req.params.userid;
-
-  // retrive the user... to verify if the user exists. else do i need to create a user?...
-  logger.log("info", `User id is ${userid}`);
-
-  const user = await User.findOne(
-    { _id: userid },
-    { __v: false, password: false, date: false }
-  );
-
-  if (!user) return res.status(400).send({ message: "User is not found..." });
-  logger.log("info", "The user details is", user.toJSON());
-
-  // retrive users address and check with shipping address?...
-
-  // saving ship address
-  const shipAddress = new Address({
-    user: userid,
-    address: req.body.ship.address,
-    postalcode: req.body.ship.postalcode,
-    city: req.body.ship.city,
-    country: req.body.ship.country,
-    phone: req.body.phone,
-    current: false
+  const chargedCustomer = await stripe.charges.create({
+    amount: amount * 100,
+    currency: "CAD",
+    source: req.body.token
   });
 
-  const shipAddress = await Address.save().catch(err => {
-    logger.error(`the database error in saving address is ${err}`);
-  });
-
-  if (!shipAddress) {
-    return res.status(400).send({ message: "Order could not be saved" });
+  if (!chargedCustomer) {
+    return res.status(400).send({ error: error });
   }
 
+  
+  const userId = req.body.user;
+  let user;
+
+  logger.log("info", `User id is ${userId}`);
+  if (userId) {
+    user = await User.findOne(
+      { _id: userId },
+      { __v: false, password: false, date: false }
+    );
+    if (!user) return res.status(400).send({ error: "User is not found..." });
+    logger.log("info", "The user details is", user.toJSON());
+  } else {
+    user = await User.findOne(
+      { email: req.body.details.email },
+      { __v: false, password: false, date: false }
+    );
+    if (!user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(process.env.NEW_PASSWORD, salt);
+
+      const newUser = new User({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.details.firstName + " " + req.body.details.lastName,
+        email: req.body.details.email,
+        password: hashedPassword
+      });
+      user = await newUser.save();
+      if (!user)
+        return res
+          .status(400)
+          .send({ error: "There was inssue, Please try again later" });
+    }
+  }
+  // retrive the billind address
+  const savedAddress = await Address.findOne({
+    address: req.body.details.address,
+    city: req.body.details.city,
+    postalCode: req.body.details.zip
+  });
+
+  if (!savedAddress) {
+    // saving ship address
+    const newAddress = new Address({
+      user: user._id,
+      address: req.body.details.address,
+      postalCode: req.body.details.zip,
+      city: req.body.details.city,
+      country: req.body.details.country,
+      phone: req.body.details.phone,
+      current: false
+    });
+
+    const shipAddress = await newAddress.save().catch(err => {
+      logger.error(`the database error in saving address is ${err}`);
+    });
+
+    if (!shipAddress) {
+      return res
+        .status(400)
+        .send({ error: "Issue creating this order, please try again later" });
+    }
+  }
+  const orders = [];
+  Object.keys(req.body.orders).forEach(ele => {
+    orders.push({
+      items: ele,
+      quantity: req.body.orders[ele]
+    });
+  });
   // saving the order
   const order = new Order({
-    user: userid,
-    totalPrice: req.body.price,
-    totalQuanity: req.body.quantity,
+    user: user._id,
+    totalPrice: amount,
+    totalQuanity: req.body.orders.total,
     status: "new-order",
-    shipTo: shipAddress._id
+    shipTo: req.body.details.shipping,
+    orders,
+    receipt_url: chargedCustomer.receipt_url
   });
 
-  req.orders.forEach(item => {
-    order.orders.push({ items: item._id, quantity: item.quantiy });
-  });
-
-  const saveOrder = await Order.save().catch(err => {
-    logger.error(`the database error in saving order is ${err}`);
+  const saveOrder = await order.save().catch(err => {
+    logger.error(
+      `There is a database error in saving the order: error is ${err}`
+    );
   });
 
   if (!saveOrder) {
-    return res.status(400).send({ message: "Order was not able to be saved" });
+    return res.status(400).send({ error: "Order was not able to be saved" });
   }
+
+  return res.status(200).send({ success: "Succesfully Charged the client" });
 });
 
-// when do i create the customer
-if (!user.stripeId) {
-  const customer = await stripe.customers.create(
-    {
-      email: user.email
-    },
-    {
-      timeout: 1000
-    }
-  );
-
-  if (customer) {
-    // update the stripeId of the user
-
-    // and create source
-    const source = await stripe.customers.createSource(customer.id, {
-        source: req.body.sToken,
-      });
-
-    // charge the customer
-    
-  }
-}
-// create source? do i need this?....
-
-
-
-// charge the customer
-const chargedCustomer = await stripe.charges.create(
-  {
-    amount: req.body.price,
-    currency: "cad",
-    source: req.body.sToken, // obtained with Stripe.js
-    metadata: { order_id: saveOrder._id },
-    customer: user.stripeId, // need to check this...
-  },
-  {
-    idempotency_key: saveOrder._id
-  },
-  function(err, charge) {} // dont worry for now. 
-);
-
-
-// 400 when charged failed...
-
 module.exports = router;
-
-
-
-
-
-
-// response from charge...
-
-// {
-//     "id": "ch_1FeDET2eZvKYlo2Ckmevc823",
-//     "object": "charge",
-//     "amount": 100,
-//     "amount_refunded": 0,
-//     "application": null,
-//     "application_fee": null,
-//     "application_fee_amount": null,
-//     "balance_transaction": "txn_19XJJ02eZvKYlo2ClwuJ1rbA",
-//     "billing_details": {
-//       "address": {
-//         "city": null,
-//         "country": null,
-//         "line1": null,
-//         "line2": null,
-//         "postal_code": null,
-//         "state": null
-//       },
-//       "email": null,
-//       "name": "Jenny Rosen",
-//       "phone": null
-//     },
-//     "captured": false,
-//     "created": 1573618409,
-//     "currency": "usd",
-//     "customer": null,
-//     "description": "My First Test Charge (created for API docs)",
-//     "dispute": null,
-//     "disputed": false,
-//     "failure_code": null,
-//     "failure_message": null,
-//     "fraud_details": {},
-//     "invoice": null,
-//     "livemode": false,
-//     "metadata": {
-//       "order_id": "6735"
-//     },
-//     "on_behalf_of": null,
-//     "order": null,
-//     "outcome": null,
-//     "paid": true,
-//     "payment_intent": null,
-//     "payment_method": "card_19yUNL2eZvKYlo2CNGsN6EWH",
-//     "payment_method_details": {
-//       "card": {
-//         "brand": "visa",
-//         "checks": {
-//           "address_line1_check": null,
-//           "address_postal_code_check": null,
-//           "cvc_check": "unchecked"
-//         },
-//         "country": "US",
-//         "exp_month": 12,
-//         "exp_year": 2020,
-//         "fingerprint": "Xt5EWLLDS7FJjR1c",
-//         "funding": "credit",
-//         "installments": null,
-//         "last4": "4242",
-//         "network": "visa",
-//         "three_d_secure": null,
-//         "wallet": null
-//       },
-//       "type": "card"
-//     },
-//     "receipt_email": null,
-//     "receipt_number": null,
-//     "receipt_url": "https://pay.stripe.com/receipts/acct_1032D82eZvKYlo2C/ch_1FeDET2eZvKYlo2Ckmevc823/rcpt_GAYLZim67PSMW5Y5w8W3hMbbu3WTQdF",
-//     "refunded": false,
-//     "refunds": {
-//       "object": "list",
-//       "data": [],
-//       "has_more": false,
-//       "url": "/v1/charges/ch_1FeDET2eZvKYlo2Ckmevc823/refunds"
-//     },
-//     "review": null,
-//     "shipping": null,
-//     "source_transfer": null,
-//     "statement_descriptor": null,
-//     "statement_descriptor_suffix": null,
-//     "status": "succeeded",
-//     "transfer_data": null,
-//     "transfer_group": null
-//   }
