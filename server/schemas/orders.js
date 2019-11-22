@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 let ordersSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "users" }, // if no user need to validate this.
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "users" , index: true },
   totalPrice: {
     type: Number,
     required: true
@@ -27,7 +27,10 @@ let ordersSchema = new mongoose.Schema({
     type: Number,
   },
   shipTo: { type: String },
-  receipt_url: {type: String}
+  receipt_url: {type: String},
+  email: {type: String},
+  contact: {type: String},
+  phone: {type: String}
 });
 
 module.exports = mongoose.model("orders", ordersSchema);
