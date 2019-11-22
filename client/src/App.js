@@ -1,6 +1,6 @@
 import React from "react";
 import { MuiThemeProvider } from "@material-ui/core";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch} from "react-router-dom";
 import { theme } from "./themes/Theme";
 import Navbar from "./components/navbar/Navbar";
 import SignAll from "./pages/SignAll";
@@ -12,6 +12,8 @@ import Admin from "./pages/admin";
 import { ProtectedRoute } from "./components/protectedRoute";
 import NewProduct from "./pages/NewProduct";
 import SingleProducts from "./pages/SingleProduct";
+import Checkout from './pages/Checkout';
+import {StripeProvider} from 'react-stripe-elements';
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
             <Route exact path="/signin" component={SignAll} />
             <Route exact path="/signup" component={SignAll} />
             <Route exact path="/products" component={AllProducts} />
+           
             <Route
               exact
               path="/products/:productid"
@@ -31,11 +34,14 @@ function App() {
             />
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
-            <ProtectedRoute
+             <ProtectedRoute
               exact
               path="/shop/new-product"
               component={NewProduct}
             />
+            <StripeProvider apiKey="pk_test_0r8FCK7bb2AZQtx3doB5XySZ">
+              <Route exact path="/checkout" component={Checkout} />
+            </StripeProvider>
           </Switch>
         </BrowserRouter>
       </MuiThemeProvider>

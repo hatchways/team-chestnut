@@ -37,7 +37,7 @@ function registerShop(authToken, cb) {
     .request(app)
     .post(`/shop/register-shop/${userMock._id}`)
     .set("auth-token", authToken)
-    .send()
+    .send({title:'new Shop', description:'this is a test'})
     .end((err, res) => {
       if (cb) {
         cb(err, res);

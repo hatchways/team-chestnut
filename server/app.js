@@ -10,6 +10,7 @@ const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 const authRouter = require("./routes/auth");
 const shopRouter = require("./routes/shop");
+const checkoutRouter = require('./routes/stripe');
 const seeding = require("./seeding");
 const app = express();
 const log = require("./utils/logger");
@@ -35,6 +36,7 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/auth", authRouter);
 app.use("/shop", shopRouter);
+app.use("/checkout", checkoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
