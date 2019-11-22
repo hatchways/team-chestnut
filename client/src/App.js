@@ -8,8 +8,9 @@ import AllProducts from "./pages/AllProducts";
 import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
-import Admin from "./pages/Admin";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import Admin from "./pages/admin";
+import { ProtectedRoute } from "./components/protectedRoute";
+import NewProduct from "./pages/NewProduct";
 import SingleProducts from "./pages/SingleProduct";
 import Checkout from './pages/Checkout';
 import {StripeProvider} from 'react-stripe-elements';
@@ -33,6 +34,11 @@ function App() {
             />
             <ProtectedRoute exact path="/admin" component={Admin} />
             <ProtectedRoute exact path="/shop" component={Shop} />
+             <ProtectedRoute
+              exact
+              path="/shop/new-product"
+              component={NewProduct}
+            />
             <StripeProvider apiKey="pk_test_0r8FCK7bb2AZQtx3doB5XySZ">
               <Route exact path="/checkout" component={Checkout} />
             </StripeProvider>
