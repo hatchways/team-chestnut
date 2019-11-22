@@ -42,11 +42,12 @@ export default function Shop() {
     goToNewProduct: false
   });
   // fetch shop data
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const USER_API = "/users/";
   // user id will be from userContext in the future
   const decoded = jwt.decode(token, { complete: true });
+  console.log(token);
   const userid = decoded.payload._id;
   useEffect(() => {
     async function fetchShop() {

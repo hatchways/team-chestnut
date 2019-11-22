@@ -97,7 +97,7 @@ function newProductReducer(state, action) {
 }
 
 export default function NewProduct(props) {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const decoded = jwt.decode(token, { complete: true });
   const userid = decoded.payload._id;
   const imageCount = 6;

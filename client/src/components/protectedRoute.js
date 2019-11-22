@@ -18,7 +18,7 @@ export const ProtectedRoute = ({ component: Component, ...rest }) => {
         {...rest}
         forceRefresh={true}
         render={props =>
-          localStorage.getItem("token") ? (
+          sessionStorage.getItem("token") ? (
             <Component {...props} />
           ) : (
             <Redirect to="/signin" />
