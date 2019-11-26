@@ -10,6 +10,14 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Icon from "@material-ui/core/Icon";
 import Logo from "../../Assets/images/birthday-cake-solid.svg";
 import { LoginContext } from "../../contexts/LoginContext";
+import Badge from "@material-ui/core/Badge";
+import MenuIcon from "@material-ui/icons/Menu";
+import IconButton from "@material-ui/core/IconButton";
+import Drawer from "@material-ui/core/Drawer";
+import Hidden from "@material-ui/core/Hidden";
+import Divider from "@material-ui/core/Divider";
+import CloseIcon from "@material-ui/icons/Close";
+import { Grid, Button } from "@material-ui/core";
 
 const navStyles = makeStyles(theme => ({
   "@global": {
@@ -18,17 +26,6 @@ const navStyles = makeStyles(theme => ({
     },
     "MuiInputBase-root": {
       borderRadius: "unset"
-    }
-  },
-  link: {
-    margin: theme.spacing(1),
-    color: "white",
-    fontWeight: "600",
-    textDecoration: "none",
-    textTransform: "uppercase",
-    "&:hover": {
-      textDecoration: "none",
-      color: "lightgrey"
     }
   },
   appBar: {
@@ -57,16 +54,40 @@ const navStyles = makeStyles(theme => ({
     top: "5px",
     left: "90px"
   },
-  cart: {
-    position: "relative",
-    display: "inline-block",
-    top: "-19px",
-    right: "31px",
-    color: "red",
-    fontSize: 14,
-    fontWeight: 800,
-    width: "20px",
-    textAlign: "center"
+  link: {
+    margin: theme.spacing(1),
+    fontWeight: "600",
+    textDecoration: "none",
+    textTransform: "uppercase"
+  },
+  [theme.breakpoints.down("md")]: {
+    links: {
+      display: "flex",
+      flexDirection: "column",
+      margin: theme.spacing(3)
+    },
+    link: {
+      color: "black",
+      margin: theme.spacing(2),
+      "&:hover": {
+        textDecoration: "none",
+        color: "grey"
+      }
+    }
+  },
+  [theme.breakpoints.up("md")]: {
+    link: {
+      color: "white",
+      "&:hover": {
+        textDecoration: "none",
+        color: "lightgrey"
+      }
+    },
+    links: {
+      display: "flex",
+      flexDirection: "row",
+      margin: theme.spacing(0)
+    }
   }
 }));
 
@@ -110,7 +131,7 @@ function SigninPaths(props) {
   }, [props.login, currentPage, props.cart]);
 
   return (
-    <div>
+    <div className={classes.links}>
       {ModifyLinks.map(linked => {
         if (linked.sublinks) {
           return (
@@ -130,8 +151,13 @@ function SigninPaths(props) {
       })}
       {props.cart !== null && (
         <Link href={"/checkout"} className={classes.link}>
-          <Icon fontSize={"large"}>shopping_cart_basket</Icon>{" "}
-          <span className={classes.cart}>{props.cart.total}</span>
+          <Badge
+            color="secondary"
+            badgeContent={props.cart.total}
+            className={classes.margin}
+          >
+            <Icon fontSize={"large"}>shopping_cart_basket</Icon>
+          </Badge>
         </Link>
       )}
     </div>
@@ -195,6 +221,17 @@ function MyAccount({ items, label, Logout }) {
 export default function Navbar() {
   const classes = navStyles();
   const props = useContext(LoginContext);
+  const [toggle, setToggle] = React.useState(false);
+  const toggleDrawer = open => event => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setToggle(open);
+  };
+
   return (
     <BrowserRouter>
       <AppBar
@@ -217,10 +254,36 @@ export default function Navbar() {
               BAKERY SHOP
             </Link>
           </Typography>
-
-          <nav>
+          <Hidden smDown>
             <SigninPaths {...props} />
-          </nav>
+          </Hidden>
+          <Hidden mdUp>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Drawer open={toggle} onClose={toggleDrawer(false)} anchor="right">
+              <Grid container>
+                <Grid item style={{ margin: "12px 0" }}>
+                  <Button
+                    onClick={toggleDrawer(false)}
+                    style={{ backgroundColor: "transparent" }}
+                  >
+                    <CloseIcon />
+                  </Button>
+                </Grid>
+                <Grid item style={{ margin: "15px 0" }}>
+                  <Typography variant="h5">Menu</Typography>
+                </Grid>
+              </Grid>
+              <Divider />
+              <SigninPaths {...props} />
+            </Drawer>
+          </Hidden>
         </Toolbar>
       </AppBar>
     </BrowserRouter>

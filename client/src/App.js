@@ -9,7 +9,7 @@ import Shop from "./pages/Shop";
 import "./App.css";
 import { LoginProvider } from "./contexts/LoginContext";
 import Admin from "./pages/Admin";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute } from "./components/protectedRoute";
 import NewProduct from "./pages/NewProduct";
 import SingleProducts from "./pages/SingleProduct";
 import Checkout from './pages/Checkout';
@@ -26,7 +26,6 @@ function App() {
             <Route exact path="/signin" component={SignAll} />
             <Route exact path="/signup" component={SignAll} />
             <Route exact path="/products" component={AllProducts} />
-           
             <Route
               exact
               path="/products/:productid"
