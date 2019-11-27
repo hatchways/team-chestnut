@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import subscribeToTimer from "../utils/SubscribeToTimer";
 
 const useStyles = makeStyles(theme => ({
   conversation: {
@@ -55,6 +56,11 @@ function messagesReducer(state, action) {
           ...state.conversations.slice(action.conversationIndex + 1)
         ]
       };
+    case "TIMESTAMP":
+      return {
+        ...state,
+        timestamp: action.timestamp
+      };
     default:
       return { ...state };
   }
@@ -105,9 +111,17 @@ export default function Messages() {
     dispatch({
       type: "MESSAGE_INPUT",
       conversationIndex,
-      message: event.target.value
+      message: event.target.value,
+      timestamp: "none set yet"
     });
   };
+  subscribeToTimer((err, timestamp) =>
+    dispatch({
+      type: "TIMESTAMP",
+      timestamp
+    })
+  );
+
   return (
     <Grid container>
       <Grid
@@ -120,6 +134,7 @@ export default function Messages() {
         <Grid item className={classes.inboxTitle}>
           <Typography variant="h5" gutterBottom>
             Inbox Messages
+            {state.timestamp}
           </Typography>
         </Grid>
         {state.conversations.map((conversation, index) => {

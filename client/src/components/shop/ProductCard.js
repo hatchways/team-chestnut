@@ -92,7 +92,7 @@ export default function ProductCard(props) {
           <Typography gutterBottom variant="h5" component="h2">
             {props.product.title}
           </Typography>
-          <Typography>{props.product.price}</Typography>
+          <Typography>${props.product.price}</Typography>
         </CardContent>
       </Card>
     </Grid>
