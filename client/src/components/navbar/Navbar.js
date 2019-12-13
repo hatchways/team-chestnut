@@ -156,7 +156,7 @@ function SigninPaths(props) {
             badgeContent={props.cart.total}
             className={classes.margin}
           >
-            <Icon fontSize={"large"}>shopping_cart_basket</Icon>
+            <Icon fontSize={"default"}>shopping_cart_basket</Icon>
           </Badge>
         </Link>
       )}
